@@ -1,0 +1,4 @@
+{
+  "name": "configureStore",
+  "main": "./configureStore.js"
+}

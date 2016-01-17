@@ -1,0 +1,57 @@
+{
+  "name": "leveltwo.github.io",
+  "version": "0.5.0",
+  "description": "Quizzes app using material-ui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LevelTwo/leveltwo.github.io.git"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
+    "build": "webpack --config webpack-production.config.js --progress --colors",
+    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js 'test/**/*.@(js|jsx)'",
+    "test:watch": "npm run test -- --watch"
+  },
+  "private": true,
+  "devDependencies": {
+    "babel-core": "^5.8.21",
+    "babel-eslint": "^4.0.5",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.25",
+    "chai": "^3.4.1",
+    "chai-immutable": "^1.5.3",
+    "css-loader": "^0.23.1",
+    "eslint": "^1.1.0",
+    "eslint-loader": "^1.0.0",
+    "eslint-plugin-react": "^3.2.2",
+    "extract-text-webpack-plugin": "^0.9.1",
+    "html-webpack-plugin": "^1.6.1",
+    "jsdom": "^7.2.2",
+    "mocha": "^2.3.4",
+    "node-sass": "^3.4.2",
+    "react-addons-test-utils": "^0.14.5",
+    "react-hot-loader": "^1.2.8",
+    "redux-devtools": "^3.0.1",
+    "redux-devtools-dock-monitor": "^1.0.1",
+    "redux-devtools-log-monitor": "^1.0.2",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.11.0",
+    "webpack-dev-server": "^1.10.1"
+  },
+  "dependencies": {
+    "firebase": "^2.3.2",
+    "history": "^1.17.0",
+    "immutable": "^3.7.6",
+    "material-ui": "^0.14.1",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-redux": "^4.0.6",
+    "react-router": "^1.0.3",
+    "react-tap-event-plugin": "^0.2.1",
+    "redux": "^3.0.5",
+    "redux-immutablejs": "0.0.8",
+    "redux-thunk": "^1.0.3",
+    "velocity-react": "^1.1.1"
+  }
+}

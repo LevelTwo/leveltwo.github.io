@@ -1,0 +1,19 @@
+"entries" :
+  "aleksandr_kerzhakov" :
+    "correct" : 0
+    "classification" : "footballer"
+    "description" : "Aleksandr Anatolyevich Kerzhakov..."
+    "image_root" : "images/footballer/aleksandr_kerzhakov"
+    "images" : [ "_1.jpg", "_2.png", "_3.jpg" ]
+    "name" : "Aleksandr Kerzhakov"
+    "responses" : 0
+"quizzes" :
+  "fp1" :
+    "img" : "images/quizzes/fp1.svg"
+    "choices" : [ "footballer", "mathematician" ]
+    "title" : "Footballer or Mathematician? I"
+    "entries" : [ "aleksandr_kerzhakov", "daniel_sturridge", ... ]
+scores :
+  "fp1" :
+    0 : [ "Anonymous", "Anonymous", ... ]
+    1 : [ "Anonymous", ... ]
