@@ -30,31 +30,27 @@ export default class Results extends Component {
 
   componentDidMount() {
     const WIDTH_IN_PERCENT_OF_PARENT = 100
-    const HEIGHT_IN_PERCENT_OF_PARENT = 100
+    const HEIGHT_IN_PERCENT_OF_PARENT = 60
 
     const { palette } = this.context.muiTheme.baseTheme
+    const { score, scores, size, title } = this.props
 
     let gd3 = d3.select('#plot')
                 .append('div')
                 .style({
                   width: WIDTH_IN_PERCENT_OF_PARENT + '%',
-                  'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
-
+                  marginLeft: (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
                   height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
-                  'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh',
                 })
 
-    let x = [ 9, 12,  7,  8,  7, 10,  8, 12,  8, 10,  5, 12,  2,  4,  9,  1, 12,
-        1, 12, 10,  2,  5, 10,  3, 12,  6,  8, 11,  7,  9,  7,  1,  5,  6,
-       11,  7,  1,  8,  1,  6,  5,  4,  6,  9,  8, 10,  5,  9,  9,  5,  8,
-        5,  6, 12,  8,  8, 12,  8,  7,  1,  5, 10,  3,  4, 11,  1,  4,  6,
-        8,  3,  3,  9, 11,  5,  6,  1,  1,  7,  5,  7, 12,  9,  9,  8,  9,
-        5, 10,  9,  9,  7, 10, 12,  5, 11, 12,  7,  5,  7,  5, 10,  0]
+    let x = Object.keys(scores)
+                  .map(k => {
+                    return Array.apply(null, Array(Object.keys(scores[k]).length))
+                                .map(() => Number(k))
+                  })
+                  .reduce((prev, curr) => prev.concat(curr))
 
-    let you = 8
-    let count = x.filter(function(k) { return k === you }).length
-
-    let s = document.getElementById('plot')
+    let count = x.filter(k => k === score).length
 
     let trace = {
       x: x,
@@ -63,7 +59,7 @@ export default class Results extends Component {
       autobinx: false,
       xbins: {
         start: -0.5,
-        end: 12,
+        end: size,
         size: 1,
       },
       marker: {color: palette.primary1Color},
@@ -74,7 +70,7 @@ export default class Results extends Component {
     let data = [trace]
 
     let layout = {
-      title: 'Stats for {QuizName}',
+      title: `${title}`,
       xaxis: {title: 'Score'},
       yaxis: {title: 'Count'},
       barmode: 'overlay',
@@ -83,7 +79,7 @@ export default class Results extends Component {
       showlegend: false,
       annotations: [
         {
-          x: you,
+          x: score,
           y: count,
           xref: 'x',
           yref: 'y',
@@ -115,8 +111,10 @@ export default class Results extends Component {
       })
     }
 
-    window.onresize = function() {
-      this.state.onresize()
+    window.onresize = () => {
+      if (this.state.onresize) {
+        this.state.onresize()
+      }
       Plotly.Plots.resize(gd)
     }
   }
@@ -126,10 +124,12 @@ export default class Results extends Component {
   }
 
   render() {
+    const { score, scores, size } = this.props
+    let percentage = Math.round(score / size * 100)
     console.log(this)
     return (
       <Card style={{maxWidth: 700, margin: "auto"}}>
-        <CardTitle title="This is the end of the quiz" subtitle={`You got 12/12 (100%)`} />
+        <CardTitle title={`You got ${score}/${size} (${percentage}%)`} />
         <CardMedia>
           <div id="plot">
           </div>
@@ -140,7 +140,7 @@ export default class Results extends Component {
           <RaisedButton label="Back to Quiz Selection" />
         </CardActions>
         <CardText>
-          My nigga
+          Congratulations, You're #FLAWLESS
         </CardText>
       </Card>
     )

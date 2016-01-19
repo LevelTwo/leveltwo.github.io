@@ -54,8 +54,8 @@ function storeFirebase(val) {
   }
 }
 
-function storeScores(val) {
-  return { type: actions.STORE_SCORES, val }
+function storeScores(scores) {
+  return { type: actions.STORE_SCORES, scores }
 }
 
 export function importFirebase(firebaseRef) {
@@ -70,9 +70,10 @@ export function importFirebase(firebaseRef) {
 
 export function listenToScoreChanges() {
   return (dispatch, getState) => {
-    const { firebaseRef } = getState()
+    const firebaseListener = new Firebase('https://leveltwo.firebaseio.com/scores')
 
-    firebaseRef.child('score').on('value', (snapshot) => {
+    firebaseListener.on('value', (snapshot) => {
+      console.log('scores value detected')
       dispatch(storeScores(snapshot.val()))
     })
   }
@@ -111,12 +112,12 @@ export function listenToScoreChanges() {
 //   }
 // }
 
-export function submitAnswer(entryId, answer) {
-  return { type: actions.SUBMIT_ANSWER, entryId, answer }
+export function submitAnswer(answer) {
+  return { type: actions.SUBMIT_ANSWER, answer }
 }
 
-export function submitResponse(quizId, name, score) {
-  return { type: actions.SUBMIT_RESPONSE, quizId, name, score }
+export function submitResponse() {
+  return { type: actions.SUBMIT_RESPONSE }
 }
 
 export function requestResponses(quizId) {

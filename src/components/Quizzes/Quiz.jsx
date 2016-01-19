@@ -8,11 +8,19 @@ import QuizGrid from './QuizGrid'
 
 class Quiz extends Component {
   render() {
-    let { dispatch, quizzes } = this.props
+    let { dispatch, current, quizzes, scores, firebaseRef, name } = this.props
     let boundActionCreators = bindActionCreators(actionCreators, dispatch)
-    if (Object.keys(this.props.current).length) {
-    // if (0) {
-      return <QuizRender {...boundActionCreators} />
+    if (Object.keys(current).length) {
+      return (
+        <QuizRender
+          firebaseRef={firebaseRef}
+          name={name}
+          current={current}
+          quizzes={quizzes}
+          scores={scores}
+          {...boundActionCreators}
+        />
+      )
     }
     return <QuizGrid {...boundActionCreators} quizzes={quizzes} />
   }
@@ -20,8 +28,11 @@ class Quiz extends Component {
 
 function select(state) {
   return {
+    firebaseRef: state.firebaseRef,
+    name: state.name,
     current: state.current,
     quizzes: state.quizzes,
+    scores: state.scores,
   }
 }
 

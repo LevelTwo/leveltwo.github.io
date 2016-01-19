@@ -23,8 +23,8 @@ export default function firebaseReducer(state = initialstate, action) {
 
 export default function reducer(state = initialState, action) {
   const firebaseUrl = 'https://leveltwo.firebaseio.com'
-  const { index, entries, submitted, score, quizId } = state.current
-
+  const { index, entries, submitted, score, id } = state.current
+  const { firebaseRef } = state
 
   switch (action.type) {
     case types.SET_NAME:
@@ -68,18 +68,18 @@ export default function reducer(state = initialState, action) {
         scores: action.scores,
       }
     case types.SELECT_QUIZ:
-      const id = action.quizId
+      const quizId = action.quizId
       // if in history then use cached version
-      if (id in state.history) {
+      if (quizId in state.history) {
         return {
           ...state,
-          current: state.history[id],
+          current: state.history[quizId],
         }
       }
-      let quiz = state.quizzes[id]
+      let quiz = state.quizzes[quizId]
       quiz = {
         ...quiz,
-        quizId: id,
+        quizId: quizId,
         score: 0,
         index: 0,
         submitted: false,
@@ -95,106 +95,74 @@ export default function reducer(state = initialState, action) {
         },
       }
     case types.NEXT:
-      let nextIndex = index < Object.keys(entries).length && !submitted ? index + 1 : index
+      let nextIndex = index + 1 //index < Object.keys(entries).length && !submitted ? index + 1 : index
+      const nextCurrent = {
+        ...state.current,
+        index: nextIndex,
+      }
       return {
         ...state,
-        current: {
-          ...state.current,
-          index: nextIndex,
+        current: nextCurrent,
+        history: {
+          ...history,
+          [id]: nextCurrent,
         },
       }
     case types.PREV:
       let prevIndex = index > 0 ? index - 1 : index
+      const prevCurrent = {
+        ...state.current,
+        index: prevIndex,
+      }
       return {
         ...state,
-        current: {
-          ...state.current,
-          index: prevIndex,
+        current: prevCurrent,
+        history: {
+          ...history,
+          [id]: prevCurrent,
         },
       }
-    case types.REQUEST_QUIZZES:
-      // let ref = new Firebase(firebaseUrl + '/quizzes')
-      // let quizzes = new Promise((resolve, reject) => {
-      //   let values = ref.once('value', snapshot => snapshot.val())
-      //   resolve(values)
-      // })
-      // console.log(quizzes)
-      // return {
-      //   ...state,
-      //   quizzes: {
-      //     quizzes,
-      //   },
-      // }
-    case types.REQUEST_QUIZ_INFO:
     case types.SUBMIT_ANSWER:
-      const answerRecord = action.answer
-      const entryId = action.entryId
-      const newScore = answerRecord === entries[index].answer ? score + 1 : score
+      const entryId = entries[index]['id']
+      const answerIsCorrect = action.answer === entries[index]['classification']
+
+      // update current with new score and user response
       const newCurrent = {
         ...state.current,
-        score: newScore,
+        score: answerIsCorrect ? score + 1 : score,
         answers: {
           ...state.current.answers,
-          [entryId]: answerRecord,
+          [entryId]: action.answer,
         },
       }
+
+      // increment responses and update correct answers
+      firebaseRef.child('entries').child(entryId).child('responses').transaction(k => k+1)
+
+      if (answerIsCorrect)
+        firebaseRef.child('entries').child(entryId).child('correct').transaction(k => k+1)
+
       return {
         ...state,
         current: newCurrent,
         history: {
           ...state.history,
-          [quizId]: newCurrent,
+          [id]: newCurrent,
         },
       }
     case types.SUBMIT_RESPONSE:
-      // let ref = new Firebase(firebaseUrl + 'scores')
-      // ref.child('scores').child('tc2').child(1).once('value', function(snapshot) { return snapshot.numChildren()); })
-      // ref.child('scores').child('tc2').child('1').child('2').set('Anon')
-    case types.REQUEST_RESPONSES:
-      return state;
-
-    case 'ADD_FRIEND':
-      const newId = state.friends[state.friends.length-1] + 1;
+      const completedCurrent = {
+        ...state.current,
+        submitted: true,
+      }
       return {
         ...state,
-        friends: state.friends.concat(newId),
-        friendsById: {
-          ...state.friendsById,
-          [newId]: {
-            id: newId,
-            name: action.name,
-          },
+        current: completedCurrent,
+        history: {
+          ...history,
+          [id]: completedCurrent,
         },
       }
-
-    case 'DELETE_FRIEND':
-      return {
-        ...state,
-        friends: state.friends.filter(id => id !== action.id),
-        friendsById: omit(state.friendsById, action.id),
-      }
-
-    case 'STAR_FRIEND':
-      return {
-        ...state,
-        friendsById: mapValues(state.friendsById, (friend) => {
-          return friend.id === action.id ?
-            assign({}, friend, { starred: !friend.starred }) :
-            friend
-        }),
-      }
-
-    case 'COMPLETE_TODO':
-      return Object.assign({}, state, {
-        todos: [
-          ...state.todos.slice(0, action.index),
-          Object.assign({}, state.todos[action.index], {
-            completed: true,
-          }),
-          ...state.todos.slice(action.index + 1),
-        ],
-      })
-
     default:
       return state;
   }

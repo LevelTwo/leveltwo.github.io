@@ -48,15 +48,6 @@ class QuizCard extends Component {
   }
 
   static propTypes = {
-    name: PropTypes.string.isRequired,
-    img: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
-    choices: PropTypes.arrayOf(PropTypes.string).isRequired,
-    answer: PropTypes.string.isRequired,
-    answered: PropTypes.bool.isRequired,
-    size: PropTypes.number.isRequired,
-    next: PropTypes.func.isRequired,
-    prev: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -76,11 +67,13 @@ class QuizCard extends Component {
   }
 
   componentDidMount() {
+    const { choices, entries, index, answers } = this.props.current
+
     this.setState({
-      answered: this.props.answered,
+      answered: entries[index].id in answers,
     })
-    for (let choice of this.props.choices) {
-      let correct = choice === this.props.answer
+    for (let choice of choices) {
+      let correct = choice === entries[index].classification
       if (correct) {
         this.setState({
           correctAnswer: choice,
@@ -94,10 +87,12 @@ class QuizCard extends Component {
   }
 
   getButtons() {
+    const { choices, entries, index } = this.props.current
+
     let list = []
     const palette = this.context.muiTheme.baseTheme.palette
-    for (let choice of this.props.choices) {
-      let correct = choice === this.props.answer
+    for (let choice of choices) {
+      let correct = choice === entries[index].classification
       let handler = correct ? this.handleSuccess : this.handleFailure
       let disabledColor = correct ? palette.accent2Color : palette.accent3Color
       list.push(
@@ -116,7 +111,7 @@ class QuizCard extends Component {
 
   handleSuccess = () => {
     let notices = ['lol', 'omg', 'wow', 'nice', 'yayy']
-    this.props.submitAnswer(this.props.answerId, this.state.correctAnswer)
+    this.props.submitAnswer(this.state.correctAnswer)
 
     this.setState({
       message: 'Correct Answer!',
@@ -124,11 +119,13 @@ class QuizCard extends Component {
       answered: true,
       snackbarOpen: true,
     })
+
+    this.handleCompletion()
   }
 
   handleFailure = () => {
     let notices = ['lol', 'omg', 'ohno', 'oops', 'nooo']
-    this.props.submitAnswer(this.props.answerId, this.state.incorrectAnswer)
+    this.props.submitAnswer(this.state.incorrectAnswer)
 
     this.setState({
       message: 'Incorrect Answer!',
@@ -136,21 +133,34 @@ class QuizCard extends Component {
       answered: true,
       snackbarOpen: true,
     })
+
+    this.handleCompletion()
+  }
+
+  handleCompletion = () => {
+    const { answers, id, score, entries } = this.props.current
+    if (Object.keys(answers).length >= Object.keys(entries).length - 1)
+      // push completed score to firebase here because cannot do so in action / reducer
+      this.props.firebaseRef.child('scores').child(id).child(score).push(this.props.name)
+      this.props.submitResponse()
   }
 
   getDescription() {
-    let text = <CardText>
+    let text = <CardText style={{paddingTop: 0}}>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
       Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
     </CardText>
-    return
+    return text
   }
 
   getTitle() {
     let menuItems = []
-    const { size, index } = this.props
+    const { entries, index, answers, choices, id, score, title } = this.props.current
+    const entry = entries[index]
+    const size = Object.keys(entries).length
+
     for (let i = 0; i < size; i++) {
       menuItems.push(
         <MenuItem key={`Q${i}`} value={i} label={i+1} primaryText={`Q${i}`} />
@@ -159,7 +169,7 @@ class QuizCard extends Component {
     menuItems.push(<MenuItem key="Results" value={size+1} label="Results" primaryText="Results" />)
     return (
       <span>
-        <span>{this.props.name}</span>
+        <span>{entry.name}</span>
         <DropDownMenu labelStyle={{paddingRight: 36}} underlineStyle={{opacity: 0}} style={{position: "absolute", top: 6, right: 0}} value={index}>
           {menuItems}
         </DropDownMenu>
@@ -168,6 +178,15 @@ class QuizCard extends Component {
   }
 
   render() {
+    console.log(this)
+
+    const { index, entries, answers } = this.props.current
+    const entry = entries[index]
+    const size = Object.keys(entries).length
+
+    const start = index === 0
+    const end = !(index < size - 1 || entry.id in answers)
+
     const styles = {
       card: {
         maxWidth: 700,
@@ -176,15 +195,24 @@ class QuizCard extends Component {
       media: {
         minHeight: 350,
         maxWidth: 700,
-        background: `url(${this.props.img}) center`,
+        background: `url(${entry.image_root + entry.images[0]}) center`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       },
     }
-    const { index, size, prev, next, submitAnswer } = this.props
-    const start = index === 0
-    const end = !(index < size - 1 || this.state.answered)
+
+    // if (size < smallwidth)
+    // <CardActions>
+    //   {this.getButtons()}
+    // </CardActions>
+    // <CardActions>
+    //   <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={prev}><ChevronLeft/></IconButton>
+    //   <IconButton disabled={end} style={{verticalAlign: "middle"}} onTouchTap={next}><ChevronRight/></IconButton>
+    //   <FlatButton label="More Info" labelStyle={{padding: "0 0 0 16px"}}>
+    //     <ArrowDropDown style={{verticalAlign: "middle"}} />
+    //   </FlatButton>
+    // </CardActions>
 
     return (
       <div className="quiz">
@@ -193,11 +221,9 @@ class QuizCard extends Component {
           <CardMedia style={styles.media}>
           </CardMedia>
           <CardActions>
+            <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
             {this.getButtons()}
-          </CardActions>
-          <CardActions>
-            <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={prev}><ChevronLeft/></IconButton>
-            <IconButton disabled={end} style={{verticalAlign: "middle"}} onTouchTap={next}><ChevronRight/></IconButton>
+            <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.handleCompletion}><ChevronRight/></IconButton>
             <FlatButton label="More Info" labelStyle={{padding: "0 0 0 16px"}}>
               <ArrowDropDown style={{verticalAlign: "middle"}} />
             </FlatButton>

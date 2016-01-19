@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const buildPath = path.resolve(__dirname, 'public');
+const buildPath = path.resolve(__dirname, 'build');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 
 module.exports = {

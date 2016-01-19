@@ -11,7 +11,7 @@ const config = {
   resolve: {
     //When require, do not have to add these extensions to file's name
     extensions: ["", ".js", ".jsx"],
-    //node_modules: ["web_modules", "node_modules"]  (Default Settings)
+    // node_modules: ["web_modules", "node_modules"]  (Default Settings)
   },
   //Render source-map file for final build
   devtool: 'source-map',

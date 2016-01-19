@@ -54,21 +54,24 @@ class QuizRender extends Component {
   }
 
   getCard() {
-    const { entries, index, answers, choices } = this.props.current
+    const { entries, index, answers, choices, id, score, title } = this.props.current
+    const scores = this.props.scores[id]
+    const size = Object.keys(entries).length
+    if (Object.keys(entries).length === index) {
+      return (
+        <Results
+          title={title}
+          score={score}
+          scores={scores}
+          size={size}
+        />
+      )
+    }
+
     const entry = entries[index]
     return (
       <QuizCard
         key={entry.id}
-        name={entry.name}
-        img={entry.image_root + entry.images[0]}
-        index={index}
-        size={Object.keys(entries).length}
-        choices={choices}
-        answerId={entry.id}
-        answer={entry.classification}
-        answered={entry.id in answers}
-        next={this.props.next}
-        prev={this.props.prev}
         {...this.props}
       />
     )
@@ -115,7 +118,7 @@ class QuizRender extends Component {
 
   render() {
     const styles = this.getStyles()
-    let rend = this.getCard()
+    // let rend = this.getCard()
     // let rend = <Results score={this.state.correct} />
     // let rend = answered === names.length ? this.getCard() : <Results score={this.state.correct} />
     return (
@@ -124,16 +127,10 @@ class QuizRender extends Component {
         enter={styles.enter}
         leave={styles.leave}
       >
-        {rend}
+        {this.getCard()}
       </VelocityTransitionGroup>
     )
   }
 }
 
-function select(state) {
-  return {
-    current: state.current,
-  }
-}
-
-export default connect(select)(QuizRender)
+export default QuizRender

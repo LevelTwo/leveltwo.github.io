@@ -1,8 +1,0 @@
-{
-  "firebase": "leveltwo",
-  "public": "./",
-  "ignore": [
-    "firebase.json",
-    "**/node_modules/**"
-  ]
-}

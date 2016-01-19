@@ -9,43 +9,53 @@ class QuizGrid extends Component {
 
   getStyles() {
     return {
+      container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+      },
+      gridList: {
+        maxWidth: 816,
+        overflowY: 'auto',
+        marginBottom: 24,
+      },
       img: {
         maxHeight: '80%',
-        minHeight: '80%',
       },
     }
+  }
+
+  log() {
+    console.log('tile clicked')
   }
 
   render() {
     const { quizzes, selectQuiz } = this.props
 
-    let tileElements
     const styles = this.getStyles()
 
-    const gridListStyle = {maxWidth: 816, overflowY: 'auto', marginBottom: 24}
-
-    if (!quizzes) {
+    if (!Object.keys(quizzes).length) {
       return <Progress />
-    } else {
-      const quizArray = Object.keys(quizzes).map(key => quizzes[key])
-
-      tileElements = quizArray.map(tile => <GridTile
-          key={tile.title}
-          title={tile.title}
-          onClick={this.log}
-          actionIcon={<IconButton onClick={() => selectQuiz(tile.id)}><ArrowForward color="white"/></IconButton>}
-          style={{backgroundColor: tile.background, textAlign: "center"}}
-        >
-          <img src={tile.img} style={styles.img} />
-        </GridTile>
-      )
     }
 
+    const quizArray = Object.keys(quizzes).map(key => quizzes[key])
+
+    const tileElements = quizArray.map(tile => <GridTile
+        key={tile.title}
+        title={tile.title}
+        onClick={() => selectQuiz(tile.id)}
+        actionIcon={<IconButton><ArrowForward color="white"/></IconButton>}
+        style={{backgroundColor: tile.background, textAlign: "center"}}
+      >
+        <img src={tile.img} style={styles.img} />
+      </GridTile>
+    )
+
     return (
-      <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+      <div>
         <GridList
-          cellHeight={200}
-          style={gridListStyle}
+          cellHeight={300}
+          padding={8}
         >
           {tileElements}
         </GridList>
