@@ -33,7 +33,9 @@ export default class Results extends Component {
     const HEIGHT_IN_PERCENT_OF_PARENT = 60
 
     const { palette } = this.context.muiTheme.baseTheme
-    const { score, scores, size, title } = this.props
+    const { entries, id, score, title } = this.props.current
+    const scores = this.props.scores[id]
+    const size = Object.keys(entries).length
 
     let gd3 = d3.select('#plot')
                 .append('div')
@@ -124,12 +126,23 @@ export default class Results extends Component {
   }
 
   render() {
-    const { score, scores, size } = this.props
-    let percentage = Math.round(score / size * 100)
-    console.log(this)
+    const { entries, id, score, title } = this.props.current
+    const scores = this.props.scores[id]
+    const size = Object.keys(entries).length
+    let percentage = Math.round(score * 100 / size)
+    let text = ''
+    if (percentage === 100) {
+      text = "Congratulations, You're #FLAWLESS"
+    } else if (percentage > 66) {
+      text = 'Impressive, you are probably familiar with '
+    } else if (percentage > 33) {
+      text = 'I guess, you probably guessed your way here'
+    } else {
+      text = 'Well, you may need to brush up on your identification ability.'
+    }
     return (
-      <Card style={{maxWidth: 700, margin: "auto"}}>
-        <CardTitle title={`You got ${score}/${size} (${percentage}%)`} />
+      <Card style={{width: "80%", margin: "auto"}}>
+        <CardTitle title={`You Got ${score}/${size} (${percentage}%) Correct`} />
         <CardMedia>
           <div id="plot">
           </div>
@@ -137,10 +150,10 @@ export default class Results extends Component {
         <CardActions>
           <IconButton style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
           <IconButton disabled={true} style={{verticalAlign: "middle"}}><ChevronRight/></IconButton>
-          <RaisedButton label="Back to Quiz Selection" />
+          <RaisedButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
         </CardActions>
         <CardText>
-          Congratulations, You're #FLAWLESS
+          {text}
         </CardText>
       </Card>
     )

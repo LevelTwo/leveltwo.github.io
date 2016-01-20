@@ -36,6 +36,10 @@ export function selectQuestion(quizId, index) {
   return { type: actions.SELECT_QUESTION, quizId, index }
 }
 
+export function removeCurrent() {
+  return { type: actions.REMOVE_CURRENT }
+}
+
 export function requestQuizzes() {
   return (dispatch, getState) => {
     const { firebaseRef } = getState()
@@ -73,7 +77,6 @@ export function listenToScoreChanges() {
     const firebaseListener = new Firebase('https://leveltwo.firebaseio.com/scores')
 
     firebaseListener.on('value', (snapshot) => {
-      console.log('scores value detected')
       dispatch(storeScores(snapshot.val()))
     })
   }

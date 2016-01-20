@@ -6,6 +6,7 @@ export const STORE_SCORES = 'STORE_SCORES'
 export const NEXT = 'NEXT'
 export const PREV = 'PREV'
 export const SUBMIT_ANSWER = 'SUBMIT_ANSWER'
+export const REMOVE_CURRENT = 'REMOVE_CURRENT'
 
 
 export const SET_FIREBASE_REF = 'SET_FIREBASE_REF'

@@ -77,64 +77,48 @@ export default function reducer(state = initialState, action) {
         }
       }
       let quiz = state.quizzes[quizId]
-      quiz = {
-        ...quiz,
-        quizId: quizId,
-        score: 0,
-        index: 0,
-        submitted: false,
-        entries: quiz.entries.map((k) => state.entries[k]),
-        answers: {},
-      }
       return {
         ...state,
-        current: quiz,
-        history: {
-          ...history,
-          [id]: quiz,
+        current: {
+          ...quiz,
+          quizId: quizId,
+          score: 0,
+          index: 0,
+          submitted: false,
+          entries: quiz.entries.map((k) => state.entries[k]),
+          answers: {},
         },
       }
     case types.NEXT:
       let nextIndex = index + 1 //index < Object.keys(entries).length && !submitted ? index + 1 : index
-      const nextCurrent = {
-        ...state.current,
-        index: nextIndex,
-      }
       return {
         ...state,
-        current: nextCurrent,
-        history: {
-          ...history,
-          [id]: nextCurrent,
+        current: {
+          ...state.current,
+          index: nextIndex,
         },
       }
     case types.PREV:
       let prevIndex = index > 0 ? index - 1 : index
-      const prevCurrent = {
-        ...state.current,
-        index: prevIndex,
-      }
       return {
         ...state,
-        current: prevCurrent,
+        current: {
+          ...state.current,
+          index: prevIndex,
+        },
+      }
+    case types.REMOVE_CURRENT:
+      return {
+        ...state,
         history: {
           ...history,
-          [id]: prevCurrent,
+          [id]: state.current,
         },
+        current: {},
       }
     case types.SUBMIT_ANSWER:
       const entryId = entries[index]['id']
       const answerIsCorrect = action.answer === entries[index]['classification']
-
-      // update current with new score and user response
-      const newCurrent = {
-        ...state.current,
-        score: answerIsCorrect ? score + 1 : score,
-        answers: {
-          ...state.current.answers,
-          [entryId]: action.answer,
-        },
-      }
 
       // increment responses and update correct answers
       firebaseRef.child('entries').child(entryId).child('responses').transaction(k => k+1)
@@ -142,25 +126,24 @@ export default function reducer(state = initialState, action) {
       if (answerIsCorrect)
         firebaseRef.child('entries').child(entryId).child('correct').transaction(k => k+1)
 
+      // update current with new score and user response
       return {
         ...state,
-        current: newCurrent,
-        history: {
-          ...state.history,
-          [id]: newCurrent,
+        current: {
+          ...state.current,
+          score: answerIsCorrect ? score + 1 : score,
+          answers: {
+            ...state.current.answers,
+            [entryId]: action.answer,
+          },
         },
       }
     case types.SUBMIT_RESPONSE:
-      const completedCurrent = {
-        ...state.current,
-        submitted: true,
-      }
       return {
         ...state,
-        current: completedCurrent,
-        history: {
-          ...history,
-          [id]: completedCurrent,
+        current: {
+          ...state.current,
+          submitted: true,
         },
       }
     default:

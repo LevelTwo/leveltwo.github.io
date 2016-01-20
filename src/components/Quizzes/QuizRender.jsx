@@ -59,21 +59,13 @@ class QuizRender extends Component {
     const size = Object.keys(entries).length
     if (Object.keys(entries).length === index) {
       return (
-        <Results
-          title={title}
-          score={score}
-          scores={scores}
-          size={size}
-        />
+        <Results {...this.props} />
       )
     }
 
     const entry = entries[index]
     return (
-      <QuizCard
-        key={entry.id}
-        {...this.props}
-      />
+      <QuizCard key={entry.id} {...this.props} />
     )
   }
 

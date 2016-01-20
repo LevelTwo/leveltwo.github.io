@@ -14,6 +14,7 @@ import CardText from 'material-ui/lib/card/card-text'
 import DropDownMenu from 'material-ui/lib/DropDownMenu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import Snackbar from 'material-ui/lib/snackbar'
+import Dialog from 'material-ui/lib/dialog'
 
 import ArrowDropDown from 'material-ui/lib/svg-icons/navigation/arrow-drop-down'
 import ArrowDropUp from 'material-ui/lib/svg-icons/navigation/arrow-drop-up'
@@ -42,12 +43,10 @@ class QuizCard extends Component {
       message: '',
       notice: '',
       answered: false,
+      moreInfo: false,
       correctAnswer: '',
       incorrectAnswer: '',
     }
-  }
-
-  static propTypes = {
   }
 
   static contextTypes = {
@@ -163,7 +162,7 @@ class QuizCard extends Component {
 
     for (let i = 0; i < size; i++) {
       menuItems.push(
-        <MenuItem key={`Q${i}`} value={i} label={i+1} primaryText={`Q${i}`} />
+        <MenuItem key={`Q${i+1}`} value={i} label={i+1} primaryText={`Q${i+1}`} />
       )
     }
     menuItems.push(<MenuItem key="Results" value={size+1} label="Results" primaryText="Results" />)
@@ -177,9 +176,13 @@ class QuizCard extends Component {
     )
   }
 
-  render() {
-    console.log(this)
+  moreInfo = () => {
+    this.setState({
+      moreInfo: !this.state.moreInfo,
+    })
+  }
 
+  render() {
     const { index, entries, answers } = this.props.current
     const entry = entries[index]
     const size = Object.keys(entries).length
@@ -202,6 +205,14 @@ class QuizCard extends Component {
       },
     }
 
+    const standardActions = (
+      <FlatButton
+        label="Okey"
+        secondary={true}
+        onTouchTap={this.moreInfo}
+      />
+    )
+
     // if (size < smallwidth)
     // <CardActions>
     //   {this.getButtons()}
@@ -223,12 +234,9 @@ class QuizCard extends Component {
           <CardActions>
             <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
             {this.getButtons()}
-            <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.handleCompletion}><ChevronRight/></IconButton>
-            <FlatButton label="More Info" labelStyle={{padding: "0 0 0 16px"}}>
-              <ArrowDropDown style={{verticalAlign: "middle"}} />
-            </FlatButton>
+            <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+            <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
           </CardActions>
-          {this.getDescription()}
         </Card>
         <Snackbar
           open={this.state.snackbarOpen}

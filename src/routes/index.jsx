@@ -13,7 +13,7 @@ const Routes = (
     <Route path="profile" component={Profile} />
     <Route path="app" component={Quiz}>
     </Route>
-    <IndexRoute component={Quiz} />
+    <IndexRoute component={Profile} />
   </Route>
 );
 

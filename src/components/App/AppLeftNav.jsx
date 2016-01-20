@@ -79,9 +79,10 @@ export default class AppLeftNav extends Component {
       <LeftNav
         zIndex={0}
         docked={false}
-        open={false}
+        open={this.state.leftNavOpen}
         zDepth={0}
         onRequestChange={this.handleChangeRequestLeftNav}
+        style={this.props.style}
       >
         <div
           style={styles}

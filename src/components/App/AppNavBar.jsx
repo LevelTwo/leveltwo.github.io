@@ -103,72 +103,9 @@ class AppNavBar extends Component {
     window.onresize = this.setTabState;
   }
 
-  getTabs = () => {
-    let muiTheme = this.state.muiTheme;
-    let iconButtonSize = muiTheme.button.iconButtonSize;
-
-    let iconStyle = {
-      color: Colors.white,
-      marginTop: (muiTheme.appBar.height - iconButtonSize) / 2,
-      marginRight: 8,
-      marginLeft: 8,
-      padding: 12,
-    };
-
-    return (
-      <Paper
-        zDepth={0}
-        rounded={false}
-        style={styles.root}
-      >
-        <EnhancedButton
-          style={styles.svgLogoContainer}
-          linkButton={true}
-          href="/home"
-        >
-          <img src={this.props.avatar} style={styles.svgLogo} />
-          <span style={styles.span}>{this.props.name}</span>
-        </EnhancedButton>
-        <Tabs
-          style={styles.tabs}
-          value={this.state.tabIndex}
-          onChange={this.handleTabChange}
-        >
-          <Tab
-            value="1"
-            label="PROFILE"
-            style={styles.tab}
-            route="/profile"
-          />
-          <Tab
-            value="2"
-            label="ABOUT"
-            style={styles.tab}
-            route="/about"
-          />
-          <Tab
-            value="3"
-            label="QUIZZES"
-            style={styles.tab}
-            route="/app"
-          />
-        </Tabs>
-      </Paper>
-    );
-  }
-
-  setTabState = () => {
-    this.setState({ renderTabs: !(document.body.clientWidth < measurements.mediumScreen) });
-  }
-
   getSelectedIndex() {
     return this.props.history.isActive('/profile') ? '1' :
       this.props.history.isActive('/about') ? '2' : '3';
-  }
-
-  handleTabChange = (value, e, tab) => {
-    this.props.history.pushState(null, tab.props.route);
-    this.setState({ tabIndex: this.getSelectedIndex() });
   }
 
   componentDidMount() {
@@ -183,7 +120,7 @@ class AppNavBar extends Component {
         onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap}
         title={this.props.name}
         zDepth={1}
-        style={styles.root}
+        style={this.props.style}
       >
         {userAvatar}
       </AppBar>
@@ -191,9 +128,8 @@ class AppNavBar extends Component {
   }
 
   render() {
-    let tabs = this.state.renderTabs ? this.getTabs() : this.getAppBar();
-    return tabs
+    return this.getAppBar()
   }
 }
 
-export default AppNavBar;
+export default AppNavBar
