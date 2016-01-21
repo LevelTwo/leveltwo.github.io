@@ -18,12 +18,14 @@ import EnhancedButton from 'material-ui/lib/enhanced-button'
 import FontIcon from 'material-ui/lib/font-icon'
 import PollIcon from 'material-ui/lib/svg-icons/social/poll'
 import MenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
+import AdjustIcon from 'material-ui/lib/svg-icons/image/adjust'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actionCreators from '../../actions/actionCreators'
 
 import AppLeftNav from './AppLeftNav'
+import AppRightNav from './AppRightNav'
 import Quiz from '../Quizzes/Quiz';
 
 const measurements = {
@@ -140,20 +142,12 @@ class App extends React.Component {
     return styles
   }
 
-  onLeftIconButtonTouchTap = () => {
+  toggleLeftNav = () => {
     this.refs.leftNav.toggle()
   }
 
-  toggleLeftNav = () => {
-    this.setState({ leftNavOpen: !this.state.leftNavOpen })
-    console.log('leftNavOpen')
-    console.log(this.state.leftNavOpen)
-  }
-
   toggleRightNav = () => {
-    this.setState({ rightNavOpen: !this.state.rightNavOpen })
-    console.log('rightNavOpen')
-    console.log(this.state.rightNavOpen)
+    this.refs.rightNav.toggle()
   }
 
   render() {
@@ -163,7 +157,6 @@ class App extends React.Component {
     const styles = this.getStyles()
 
     let userAvatar = <Avatar style={{marginTop: '12'}}>A</Avatar>
-    console.log(this.state.leftNavOpen)
 
     const title = (
       <div>
@@ -177,25 +170,23 @@ class App extends React.Component {
     return (
       <div>
         <AppBar
-          onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap}
-          onRightIconButtonTouchTap={this.toggleRightNav}
+          iconElementRight={<IconButton onTouchTap={this.toggleRightNav}><AdjustIcon /></IconButton>}
+          onLeftIconButtonTouchTap={this.toggleLeftNav}
           title={title}
           showMenuIconButton={true}
-          iconElementRight={<IconButton><MenuIcon /></IconButton>}
+          open={this.state.rightNavOpen}
           zDepth={1}
           style={styles.appBar}
         />
         <AppLeftNav
           ref="leftNav"
-          history={this.props.history}
-          location={this.props.location}
           {...boundActionCreators}
+          {...this.props}
         />
-        <LeftNav
-          width={200}
-          openRight={true}
-          open={this.state.rightNavOpen}
-          onRequestChange={open => this.setState({open})}
+        <AppRightNav
+          ref="rightNav"
+          {...boundActionCreators}
+          {...this.props}
         />
         <div style={styles.container}>
           {this.props.children}

@@ -22,11 +22,10 @@ const styles = {
 };
 
 export default class AppLeftNav extends Component {
+
   constructor(props) {
-    super(props);
-    this.state = {
-      leftNavOpen: false,
-    };
+    super(props)
+    this.state = { leftNavOpen: false }
   }
 
   static propTypes = {
@@ -44,34 +43,26 @@ export default class AppLeftNav extends Component {
   }
 
   handleChangeRequestLeftNav = (open) => {
-    this.setState({
-      leftNavOpen: open,
-    });
+    this.setState({ leftNavOpen: open })
   }
 
   handleRequestChangeList = (event, value) => {
     this.props.history.push(value);
-    this.setState({
-      leftNavOpen: false,
-    });
+    this.setState({ leftNavOpen: false })
   }
 
   handleRequestChangeLink = (event, value) => {
     window.location = value;
-    this.setState({
-      leftNavOpen: false,
-    });
+    this.setState({ leftNavOpen: false })
   }
 
   handleTouchTapHeader = () => {
     this.props.history.push('/');
-    this.setState({
-      leftNavOpen: false,
-    });
+    this.setState({ leftNavOpen: false })
   }
 
   toggle = () => {
-    this.setState({ leftNavOpen: !this.state.leftNavOpen });
+    this.setState({ leftNavOpen: !this.state.leftNavOpen })
   }
 
   render() {
@@ -88,7 +79,7 @@ export default class AppLeftNav extends Component {
           style={styles}
           onTouchTap={this.handleTouchTapHeader}
         >
-          Quizzes
+          {this.props.name}
         </div>
         <SelectableList
           valueLink={{
