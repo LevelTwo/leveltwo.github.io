@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { LeftNav, Mixins, Styles } from 'material-ui';
+import React, { Component } from 'react'
+import { LeftNav, Mixins, Styles } from 'material-ui'
 
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import Divider from 'material-ui/lib/divider';
-import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
+import List from 'material-ui/lib/lists/list'
+import ListItem from 'material-ui/lib/lists/list-item'
+import Divider from 'material-ui/lib/divider'
+import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance'
 
-const {Colors, Spacing, Typography} = Styles;
-const {StylePropable} = Mixins;
-const SelectableList = SelectableContainerEnhance(List);
+const {Colors, Spacing, Typography} = Styles
+const {StylePropable} = Mixins
+const SelectableList = SelectableContainerEnhance(List)
 
 const styles = {
   cursor: 'pointer',
@@ -19,14 +19,13 @@ const styles = {
   backgroundColor: Colors.green500,
   paddingLeft: Spacing.desktopGutter,
   marginBottom: 8,
-};
+}
 
 export default class AppLeftNav extends Component {
+
   constructor(props) {
-    super(props);
-    this.state = {
-      leftNavOpen: false,
-    };
+    super(props)
+    this.state = { leftNavOpen: false }
   }
 
   static propTypes = {
@@ -40,55 +39,47 @@ export default class AppLeftNav extends Component {
   }
 
   getSelectedIndex = () => {
-    return this.props.location.pathname.split('/')[1];
+    return this.props.location.pathname.split('/')[1]
   }
 
   handleChangeRequestLeftNav = (open) => {
-    this.setState({
-      leftNavOpen: open,
-    });
+    this.setState({ leftNavOpen: open })
   }
 
   handleRequestChangeList = (event, value) => {
-    this.props.history.push(value);
-    this.setState({
-      leftNavOpen: false,
-    });
+    this.props.history.push(value)
+    this.setState({ leftNavOpen: false })
   }
 
   handleRequestChangeLink = (event, value) => {
-    window.location = value;
-    this.setState({
-      leftNavOpen: false,
-    });
+    window.location = value
+    this.setState({ leftNavOpen: false })
   }
 
   handleTouchTapHeader = () => {
-    this.props.history.push('/');
-    this.setState({
-      leftNavOpen: false,
-    });
+    this.props.history.push('/')
+    this.setState({ leftNavOpen: false })
   }
 
   toggle = () => {
-    this.setState({ leftNavOpen: !this.state.leftNavOpen });
+    this.setState({ leftNavOpen: !this.state.leftNavOpen })
   }
 
   render() {
     return (
       <LeftNav
         zIndex={0}
-        docked={false}
-        open={this.state.leftNavOpen}
+        docked={this.props.docked}
+        open={this.props.open}
         zDepth={0}
-        onRequestChange={this.handleChangeRequestLeftNav}
+        onRequestChange={this.props.onRequestChange}
         style={this.props.style}
       >
         <div
           style={styles}
           onTouchTap={this.handleTouchTapHeader}
         >
-          Quizzes
+          {this.props.name}
         </div>
         <SelectableList
           valueLink={{
@@ -139,6 +130,6 @@ export default class AppLeftNav extends Component {
           />
         </SelectableList>
       </LeftNav>
-    );
+    )
   }
 }

@@ -18,33 +18,37 @@ import EnhancedButton from 'material-ui/lib/enhanced-button'
 import FontIcon from 'material-ui/lib/font-icon'
 import PollIcon from 'material-ui/lib/svg-icons/social/poll'
 import MenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
+import AdjustIcon from 'material-ui/lib/svg-icons/image/adjust'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actionCreators from '../../actions/actionCreators'
 
 import AppLeftNav from './AppLeftNav'
+import AppRightNav from './AppRightNav'
 import Quiz from '../Quizzes/Quiz';
-
-const measurements = {
-  appBarHeight: 64,
-  smallScreen: 600,
-  mediumScreen: 992,
-  largeScreen: 1200,
-}
 
 class App extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      loggedIn: true,
-      muiTheme: ThemeManager.getMuiTheme(Theme),
-      renderTabs: !(document.body.clientWidth < measurements.mediumScreen),
+      leftNavDocked: false,
       leftNavOpen: false,
+      rightNavDocked: false,
       rightNavOpen: false,
+      muiTheme: ThemeManager.getMuiTheme(Theme),
+      measurements: {
+        smallScreen: 600,
+        mediumScreen: 992,
+        largeScreen: 1200,
+        rightNavOpen: 1000,
+        leftNavOpen: 992,
+      },
+      iconElementRight: <IconButton onTouchTap={this.toggleRightNav}><AdjustIcon /></IconButton>,
+      showMenuIconButton: true,
+      windowWidth: window.innerWidth,
     }
-    window.onresize = this.setTabState
   }
 
   static propTypes = {
@@ -55,12 +59,14 @@ class App extends React.Component {
 
   static childContextTypes = {
     muiTheme: PropTypes.object,
+    measurements: PropTypes.object,
   }
 
   getChildContext() {
     return {
       muiTheme: this.state.muiTheme,
-    };
+      measurements: this.state.measurements,
+    }
   }
 
   componentWillMount() {
@@ -71,16 +77,46 @@ class App extends React.Component {
     const ref = new Firebase(firebaseUrl)
     boundActionCreators.importFirebase(ref)
     boundActionCreators.listenToScoreChanges()
+    this.handleResize()
+  }
+
+  handleResize = (e) => {
+    this.setState({ windowWidth: window.innerWidth })
+    const large = document.body.clientWidth > this.state.measurements.largeScreen
+    const medium = document.body.clientWidth > this.state.measurements.mediumScreen
+
+    this.setState({
+      showMenuIconButton: medium ? false : true,
+      leftNavDocked: medium ? true : false,
+      leftNavOpen: medium ? true : false,
+      rightNavDocked: large ? true : false,
+      rightNavOpen: large ? true : false,
+      iconElementRight: large ? <div></div> : <IconButton onTouchTap={this.toggleRightNav}><AdjustIcon /></IconButton>,
+    })
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   }
 
   getStyles() {
+    const { measurements } = this.state
+
     const styles = {
       appBar: {
         position: 'fixed',
-        // Needed to overlap the examples
         zIndex: this.state.muiTheme.zIndex.appBar + 1,
         top: 0,
         left: 0,
+      },
+      avatar: {
+        top: 12,
+        position: 'relative',
+        marginRight: 12,
       },
       container: {
         paddingTop: 64,
@@ -93,14 +129,21 @@ class App extends React.Component {
         zIndex: 5,
         color: 'white',
       },
+      name: {
+        marginRight: 12,
+      },
       root: {
         backgroundColor: Theme.palette.primary1Color,
         position: 'fixed',
-        height: measurements.appBarHeight,
+        height: 64,
         top: 0,
         right: 0,
         zIndex: 1101,
         width: '100%',
+      },
+      score: {
+        position: 'absolute',
+        right: 70,
       },
       span: {
         color: Colors.white,
@@ -111,8 +154,8 @@ class App extends React.Component {
         fontSize: 26,
       },
       svgLogo: {
-        width: measurements.appBarHeight * 4 / 5,
-        height: measurements.appBarHeight * 4 / 5,
+        width: 64 * 4 / 5,
+        height: 64 * 4 / 5,
         position: 'absolute',
         top: 6,
       },
@@ -121,81 +164,83 @@ class App extends React.Component {
         width: 300,
         left: Spacing.desktopGutter * 2,
       },
-      tabs: {
-        width: 425,
-        bottom: 0,
-        position: 'absolute',
-        right: Spacing.desktopGutter,
-        bottom: 0,
-      },
-      tab: {
-        height: measurements.appBarHeight,
-      },
       button: {
         backgroundColor: 'transparent',
         color: 'white',
       },
     }
 
-    return styles
-  }
+    if (document.body.clientWidth > measurements.mediumScreen) {
+      styles.leftNav = {
+        zIndex: styles.appBar.zIndex - 1,
+      }
 
-  onLeftIconButtonTouchTap = () => {
-    this.refs.leftNav.toggle()
+      styles.root.paddingLeft = 256
+      styles.container.paddingLeft = 256
+    }
+
+    if (document.body.clientWidth > measurements.largeScreen) {
+      styles.rightNav = {
+        zIndex: styles.appBar.zIndex - 1,
+      }
+
+      styles.root.paddingRight = 256
+      styles.container.paddingRight = 256
+      styles.score.right = 32
+    }
+
+    return styles
   }
 
   toggleLeftNav = () => {
     this.setState({ leftNavOpen: !this.state.leftNavOpen })
-    console.log('leftNavOpen')
-    console.log(this.state.leftNavOpen)
   }
 
   toggleRightNav = () => {
     this.setState({ rightNavOpen: !this.state.rightNavOpen })
-    console.log('rightNavOpen')
-    console.log(this.state.rightNavOpen)
   }
 
   render() {
     const { dispatch } = this.props
+    const score = this.props.current.score || 0
     const boundActionCreators = bindActionCreators(actionCreators, dispatch)
 
     const styles = this.getStyles()
 
-    let userAvatar = <Avatar style={{marginTop: '12'}}>A</Avatar>
-    console.log(this.state.leftNavOpen)
-
     const title = (
       <div>
-        <Avatar src={this.props.avatar} style={{top: 12, position: "relative", marginRight: 12}} />
-        <span style={{marginRight: 12}}>{this.props.name}</span>
-        <span style={{position: "absolute", right: 70}}>{this.props.score} pts</span>
+        <Avatar src={this.props.avatar} style={styles.avatar} />
+        <span style={styles.name}>{this.props.name}</span>
+        <span style={styles.score}>{score} pts</span>
       </div>
     )
 
-    // FIX NAVBAR
     return (
       <div>
         <AppBar
-          onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap}
-          onRightIconButtonTouchTap={this.toggleRightNav}
+          iconElementRight={this.state.iconElementRight}
+          onLeftIconButtonTouchTap={this.toggleLeftNav}
           title={title}
-          showMenuIconButton={true}
-          iconElementRight={<IconButton><MenuIcon /></IconButton>}
-          zDepth={1}
+          showMenuIconButton={this.state.showMenuIconButton}
+          open={this.state.rightNavOpen}
+          zDepth={2}
           style={styles.appBar}
         />
         <AppLeftNav
           ref="leftNav"
-          history={this.props.history}
-          location={this.props.location}
-          {...boundActionCreators}
+          open={this.state.leftNavOpen}
+          docked={this.state.leftNavDocked}
+          style={styles.leftNav}
+          onRequestChange={this.toggleLeftNav}
+          {...this.props}
         />
-        <LeftNav
-          width={200}
-          openRight={true}
+        <AppRightNav
+          ref="rightNav"
           open={this.state.rightNavOpen}
-          onRequestChange={open => this.setState({open})}
+          docked={this.state.rightNavDocked}
+          style={styles.rightNav}
+          onRequestChange={this.toggleRightNav}
+          {...this.props}
         />
         <div style={styles.container}>
           {this.props.children}
@@ -209,7 +254,7 @@ function select(state) {
   return {
     name: state.name,
     avatar: state.avatar,
-    score: state.current.score || 0,
+    current: state.current,
   }
 }
 
