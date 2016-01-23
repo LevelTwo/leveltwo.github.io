@@ -1,18 +1,17 @@
-import React, { Component } from 'react'
-import { LeftNav, Mixins, Styles } from 'material-ui'
-
+import React, { PropTypes, Component } from 'react'
+import LeftNav from 'material-ui/lib/left-nav'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
 import Divider from 'material-ui/lib/divider'
-import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance'
+import { Colors, Spacing, Typography } from 'material-ui/lib/styles'
+import { SelectableContainerEnhance } from 'material-ui/lib/hoc/selectable-enhance'
+
 import CheckIcon from 'material-ui/lib/svg-icons/navigation/check'
 import CloseIcon from 'material-ui/lib/svg-icons/navigation/close'
 
 import CorrectListItem from './CorrectListItem'
 import IncorrectListItem from './IncorrectListItem'
 
-const { Colors, Spacing, Typography } = Styles
-const { StylePropable } = Mixins
 const SelectableList = SelectableContainerEnhance(List)
 
 
@@ -35,13 +34,13 @@ export default class AppRightNav extends Component {
   }
 
   static propTypes = {
-    docked: React.PropTypes.bool,
-    history: React.PropTypes.object,
-    location: React.PropTypes.object,
-    onRequestChangeLeftNav: React.PropTypes.func,
-    onRequestChangeList: React.PropTypes.func,
-    open: React.PropTypes.bool,
-    style: React.PropTypes.object,
+    docked: PropTypes.bool,
+    history: PropTypes.object,
+    location: PropTypes.object,
+    onRequestChangeLeftNav: PropTypes.func,
+    onRequestChangeList: PropTypes.func,
+    open: PropTypes.bool,
+    style: PropTypes.object,
   }
 
   getSelectedIndex = () => {
@@ -49,21 +48,34 @@ export default class AppRightNav extends Component {
   }
 
   getQuestionList = () => {
-    const { current } = this.props
+    const { current, selectQuestion } = this.props
     let questions = []
 
     for (let i = 0; i < Object.keys(current.entries).length; i++) {
       let entry = current.entries[i]
-
+      const questionName = `Q${i+1}`
+      const handleSelectQuestion = () => selectQuestion(i)
+      let listItem = <ListItem
+        key={entry.name}
+        primaryText={questionName}
+        onTouchTap={handleSelectQuestion}
+      />
       if (entry.id in current.answers) {
         if (current.answers[entry.id] === entry.classification) {
-          questions.push(<ListItem key={entry.name} primaryText={<CorrectListItem primaryText={entry.name} style={{maxHeight: 48}} />} />)
+          listItem = <CorrectListItem
+            key={entry.name}
+            index={i}
+            onTouchTap={handleSelectQuestion}
+          />
         } else {
-          questions.push(<ListItem key={entry.name} primaryText={<IncorrectListItem primaryText={entry.name} style={{maxHeight: 48}} />} />)
+          listItem = <IncorrectListItem
+            key={entry.name}
+            index={i}
+            onTouchTap={handleSelectQuestion}
+          />
         }
-      } else {
-        questions.push(<ListItem key={entry.name} primaryText={entry.name} />)
       }
+      questions.push(listItem)
     }
 
     return questions
@@ -113,15 +125,9 @@ export default class AppRightNav extends Component {
         >
           {hasCurrent ? current.score : 0} pts
         </div>
-        <SelectableList
-          subheader={subheader}
-          valueLink={{
-            value: '',
-            requestChange: this.handleRequestChangeLink,
-          }}
-        >
+        <List subheader={subheader}>
           {questions}
-        </SelectableList>
+        </List>
       </LeftNav>
     )
   }

@@ -32,8 +32,8 @@ export function selectQuiz(quizId) {
   return { type: actions.SELECT_QUIZ, quizId }
 }
 
-export function selectQuestion(quizId, index) {
-  return { type: actions.SELECT_QUESTION, quizId, index }
+export function selectQuestion(index) {
+  return { type: actions.SELECT_QUESTION, index }
 }
 
 export function removeCurrent() {

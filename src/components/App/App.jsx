@@ -20,6 +20,8 @@ import PollIcon from 'material-ui/lib/svg-icons/social/poll'
 import MenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
 import AdjustIcon from 'material-ui/lib/svg-icons/image/adjust'
 
+import LinearProgress from 'material-ui/lib/linear-progress'
+
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actionCreators from '../../actions/actionCreators'
@@ -203,6 +205,8 @@ class App extends React.Component {
   render() {
     const { dispatch } = this.props
     const score = this.props.current.score || 0
+    const answers = this.props.current.answers ? Object.keys(this.props.current.answers).length : 0
+    const total = this.props.current.entries ? this.props.current.entries.length : 0
     const boundActionCreators = bindActionCreators(actionCreators, dispatch)
 
     const styles = this.getStyles()
@@ -222,7 +226,6 @@ class App extends React.Component {
           onLeftIconButtonTouchTap={this.toggleLeftNav}
           title={title}
           showMenuIconButton={this.state.showMenuIconButton}
-          open={this.state.rightNavOpen}
           zDepth={2}
           style={styles.appBar}
         />
@@ -233,6 +236,7 @@ class App extends React.Component {
           style={styles.leftNav}
           onRequestChange={this.toggleLeftNav}
           {...this.props}
+          {...boundActionCreators}
         />
         <AppRightNav
           ref="rightNav"
@@ -241,6 +245,13 @@ class App extends React.Component {
           style={styles.rightNav}
           onRequestChange={this.toggleRightNav}
           {...this.props}
+          {...boundActionCreators}
+        />
+        <LinearProgress
+          color={total ? Colors.green300 : Colors.green500}
+          mode="determinate"
+          value={total ? answers * 100 / total : 100}
+          style={{top: 60, zIndex: 1102, position: "fixed", width: "98.5%"}}
         />
         <div style={styles.container}>
           {this.props.children}
@@ -255,6 +266,7 @@ function select(state) {
     name: state.name,
     avatar: state.avatar,
     current: state.current,
+    quizzes: state.quizzes,
   }
 }
 

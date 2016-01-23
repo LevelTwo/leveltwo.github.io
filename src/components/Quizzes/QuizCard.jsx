@@ -46,11 +46,13 @@ class QuizCard extends Component {
       moreInfo: false,
       correctAnswer: '',
       incorrectAnswer: '',
+      medium: false,
     }
   }
 
   static contextTypes = {
     muiTheme: PropTypes.object,
+    measurements: PropTypes.object,
   }
 
   openSnackbar = () => {
@@ -196,7 +198,7 @@ class QuizCard extends Component {
         margin: "auto",
       },
       media: {
-        minHeight: 350,
+        minHeight: 400,
         maxWidth: 700,
         background: `url(${entry.image_root + entry.images[0]}) center`,
         backgroundPosition: "center",
@@ -213,17 +215,24 @@ class QuizCard extends Component {
       />
     )
 
-    // if (size < smallwidth)
-    // <CardActions>
-    //   {this.getButtons()}
-    // </CardActions>
-    // <CardActions>
-    //   <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={prev}><ChevronLeft/></IconButton>
-    //   <IconButton disabled={end} style={{verticalAlign: "middle"}} onTouchTap={next}><ChevronRight/></IconButton>
-    //   <FlatButton label="More Info" labelStyle={{padding: "0 0 0 16px"}}>
-    //     <ArrowDropDown style={{verticalAlign: "middle"}} />
-    //   </FlatButton>
-    // </CardActions>
+    const mediumScreen = document.body.clientWidth > this.context.measurements.mediumScreen
+    let cardActions = null
+    if (mediumScreen) {
+      cardActions = <CardActions>
+        <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
+        {this.getButtons()}
+        <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
+      </CardActions>
+    } else {
+      cardActions = <CardActions>
+        {this.getButtons()}
+        <br/>
+        <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
+        <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
+      </CardActions>
+    }
 
     return (
       <div className="quiz">
@@ -231,12 +240,7 @@ class QuizCard extends Component {
           <CardTitle title={this.getTitle()} />
           <CardMedia style={styles.media}>
           </CardMedia>
-          <CardActions>
-            <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
-            {this.getButtons()}
-            <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
-            <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
-          </CardActions>
+          {cardActions}
         </Card>
         <Snackbar
           open={this.state.snackbarOpen}

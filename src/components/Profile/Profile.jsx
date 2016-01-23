@@ -36,7 +36,7 @@ class Profile extends Component {
         justifyContent: 'center',
       },
       card: {
-        width: 600,
+        maxWidth: 700,
         margin: 'auto',
         padding: '2em',
       },

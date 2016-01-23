@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.4 (17249) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="quizzes" sketch:type="MSArtboardGroup">
+            <g id="Group" sketch:type="MSLayerGroup">
+                <circle id="Background" fill="#81C784" sketch:type="MSShapeGroup" cx="256" cy="256" r="256"></circle>
+                <path d="M511.980717,252.825112 C511.99356,253.881879 512,254.940188 512,256 C512,397.384896 397.384896,512 256,512 C251.600124,512 247.226172,511.889002 242.880794,511.669652 L132.431405,428.979712 L364.262783,104.262783 L511.980717,252.825112 L511.980717,252.825112 Z" id="Shadow" fill="#66BB6A" sketch:type="MSShapeGroup"></path>
+                <path d="M160.005565,60 C137.914451,60 120,77.9055543 120,99.9931748 L120,400.006825 C120,411.405162 124.77335,421.69325 132.431405,428.979712 C139.607681,435.807772 149.317117,440 160.005565,440 L359.994435,440 C382.085549,440 400,422.094446 400,400.006825 L400,140 C400,140 376.175189,116.175189 364.262783,104.262783 C349.508522,89.5085219 320,60 320,60 L160.005565,60 Z" id="Paper" fill="#FAFAFA" sketch:type="MSShapeGroup"></path>
+                <path d="M400,137.499573 L400,140 L320,60 L324.999304,60 L320,60 L320,95.8590435 L320,124.999561 C320,133.282555 326.715925,140 335.000439,140 L363.97039,140 L400,140 L400,137.499573 L400,137.499573 Z" id="Tab" fill="#BDBDBD" sketch:type="MSShapeGroup"></path>
+                <rect id="Entry" fill="#E0E0E0" sketch:type="MSShapeGroup" x="150" y="250" width="40" height="40" rx="20"></rect>
+                <rect id="Entry" fill="#E0E0E0" sketch:type="MSShapeGroup" x="150" y="310" width="40" height="40" rx="20"></rect>
+                <rect id="Entry" fill="#E0E0E0" sketch:type="MSShapeGroup" x="150" y="370" width="40" height="40" rx="20"></rect>
+                <rect id="Content" fill="#E0E0E0" sketch:type="MSShapeGroup" x="210" y="250" width="160" height="40" rx="20"></rect>
+                <rect id="Content" fill="#E0E0E0" sketch:type="MSShapeGroup" x="210" y="310" width="160" height="40" rx="20"></rect>
+                <rect id="Content" fill="#E0E0E0" sketch:type="MSShapeGroup" x="210" y="370" width="160" height="40" rx="20"></rect>
+                <rect id="Content-Check" fill="#81C784" sketch:type="MSShapeGroup" x="210" y="190" width="160" height="40" rx="20"></rect>
+                <path d="M164.541678,210.547743 L159.835034,205.636684 C158.243588,203.97612 155.664255,203.97596 154.073465,205.635839 L151.193077,208.641326 C149.601696,210.301823 149.60265,212.992781 151.193887,214.653127 L161.651894,225.565338 C163.137482,227.115447 165.483907,227.218695 167.083481,225.875377 C167.226065,225.761593 167.363104,225.636665 167.49351,225.500594 L188.806042,203.262434 C190.397605,201.601747 190.397983,198.910156 188.807194,197.250276 L185.926805,194.244789 C184.335424,192.584293 181.75632,192.585448 180.164895,194.245991 L164.541678,210.547743 L164.541678,210.547743 Z" id="Checkmark" fill="#81C784" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
+</svg>

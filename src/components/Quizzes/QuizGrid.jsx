@@ -21,12 +21,9 @@ class QuizGrid extends Component {
       },
       img: {
         maxHeight: '80%',
+        maxWidth: '90%',
       },
     }
-  }
-
-  log() {
-    console.log('tile clicked')
   }
 
   render() {

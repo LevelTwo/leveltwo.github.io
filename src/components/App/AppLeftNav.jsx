@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
-import { LeftNav, Mixins, Styles } from 'material-ui'
-
+import Avatar from 'material-ui/lib/avatar'
+import LeftNav from 'material-ui/lib/left-nav'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
 import Divider from 'material-ui/lib/divider'
-import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance'
+import { SelectableContainerEnhance } from 'material-ui/lib/hoc/selectable-enhance'
+import { Colors, Spacing, Typography } from 'material-ui/lib/styles'
 
-const {Colors, Spacing, Typography} = Styles
-const {StylePropable} = Mixins
+import AccountBoxIcon from 'material-ui/lib/svg-icons/action/account-box'
+import AccountCircleIcon from 'material-ui/lib/svg-icons/action/account-circle'
+import InfoIcon from 'material-ui/lib/svg-icons/action/info'
+import InfoOutlineIcon from 'material-ui/lib/svg-icons/action/info-outline'
+
 const SelectableList = SelectableContainerEnhance(List)
 
 const styles = {
@@ -66,12 +70,19 @@ export default class AppLeftNav extends Component {
   }
 
   render() {
+    const quizzes = this.props.quizzes
+    const quizArray = Object.keys(quizzes).map(key => quizzes[key])
+    const listElements = quizArray.map(quiz => <ListItem
+        leftAvatar={<Avatar src={quiz.img} backgroundColor={quiz.background} />}
+        primaryText={quiz.title}
+      />
+    )
+
     return (
       <LeftNav
         zIndex={0}
         docked={this.props.docked}
         open={this.props.open}
-        zDepth={0}
         onRequestChange={this.props.onRequestChange}
         style={this.props.style}
       >
@@ -88,16 +99,20 @@ export default class AppLeftNav extends Component {
           }}
         >
           <ListItem
+            leftAvatar={<Avatar icon={<AccountCircleIcon />} backgroundColor={Colors.blue500} />}
             value="profile"
             primaryText="Profile"
           />
           <ListItem
+            leftAvatar={<Avatar icon={<InfoIcon />} backgroundColor={Colors.red500} />}
             value="about"
             primaryText="About"
           />
           <ListItem
+            leftAvatar={<Avatar src="images/quizzes/quizzes2.svg" />}
             value="app"
             primaryText="Quizzes"
+            nestedItems={listElements}
           />
         </SelectableList>
         <Divider />
@@ -113,22 +128,18 @@ export default class AppLeftNav extends Component {
             primaryText="Source"
           />
           <ListItem
-            value="https://github.com/callemall/material-ui"
-            primaryText="Footballer or Mathematician I"
-          />
-          <ListItem
             value="http://facebook.github.io/react"
-            primaryText="Footballer or Mathematician II"
+            primaryText="React"
           />
           <ListItem
             value="https://www.google.com/design/spec/material-design/introduction.html"
-            primaryText="Thai or Chinese I"
+            primaryText="Material Design"
           />
           <ListItem
-            value="https://www.google.com/design/spec/material-design/introduction.html"
-            primaryText="Thai or Chinese II"
+            value="https://github.com/callemall/material-ui"
+            primaryText="material-ui"
           />
-        </SelectableList>
+      </SelectableList>
       </LeftNav>
     )
   }

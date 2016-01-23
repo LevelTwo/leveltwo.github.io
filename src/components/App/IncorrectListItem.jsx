@@ -1,10 +1,12 @@
 import React, { PropTypes, Component } from 'react'
+import ListItem from 'material-ui/lib/lists/list-item'
 import CloseIcon from 'material-ui/lib/svg-icons/navigation/close'
 
 export default class IncorrectListItem extends Component {
 
   static propTypes = {
-    primaryText: PropTypes.string.isRequired,
+    index: PropTypes.number.isRequired,
+    onTouchTap: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -13,12 +15,16 @@ export default class IncorrectListItem extends Component {
 
   render() {
     const { accent3Color } = this.context.muiTheme.baseTheme.palette
+    const { index, onTouchTap } = this.props
+    const questionName = `Q${index + 1}`
 
     return (
-      <div>
-        <span style={{verticalAlign: "middle", paddingRight: 10, color: accent3Color}}>{this.props.primaryText}</span>
-        <CloseIcon color={accent3Color} style={{verticalAlign: "middle"}} />
-      </div>
+      <ListItem
+        primaryText={questionName}
+        rightIcon={<CloseIcon color={accent3Color} />}
+        onTouchTap={onTouchTap}
+        style={{color: accent3Color}}
+      />
     )
   }
 }

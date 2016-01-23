@@ -89,6 +89,14 @@ export default function reducer(state = initialState, action) {
           answers: {},
         },
       }
+    case types.SELECT_QUESTION:
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          index: action.index,
+        },
+      }
     case types.NEXT:
       let nextIndex = index + 1 //index < Object.keys(entries).length && !submitted ? index + 1 : index
       return {
