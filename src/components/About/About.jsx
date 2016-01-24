@@ -13,7 +13,7 @@ export default class About extends Component {
 
     return (
       <div style={{textAlign: "center", paddingTop: "2em"}}>
-        <img src='quizzes.svg' style={{width: "250px", height: "250px"}} />
+        <img src='images/quizzes/quizzes.svg' style={{width: "250px", height: "250px"}} />
         <h1>Quizzes</h1>
         <p>Welcome to Quizzes</p>
         <RaisedButton

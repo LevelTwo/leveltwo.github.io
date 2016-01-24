@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import QuizCard from './QuizCard'
 import Results from './Results'
 
-class QuizRender extends Component {
+export default class QuizRender extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -110,9 +110,6 @@ class QuizRender extends Component {
 
   render() {
     const styles = this.getStyles()
-    // let rend = this.getCard()
-    // let rend = <Results score={this.state.correct} />
-    // let rend = answered === names.length ? this.getCard() : <Results score={this.state.correct} />
     return (
       <VelocityTransitionGroup
         style={styles.transition}
@@ -124,5 +121,3 @@ class QuizRender extends Component {
     )
   }
 }
-
-export default QuizRender

@@ -5,7 +5,7 @@ import ArrowForward from 'material-ui/lib/svg-icons/navigation/arrow-forward'
 import IconButton from 'material-ui/lib/icon-button'
 import Progress from './Progress'
 
-class QuizGrid extends Component {
+export default class QuizGrid extends Component {
 
   getStyles() {
     return {
@@ -60,5 +60,3 @@ class QuizGrid extends Component {
     )
   }
 }
-
-export default QuizGrid;

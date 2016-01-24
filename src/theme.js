@@ -11,7 +11,7 @@ export default {
     primary1Color: Colors.green500,
     primary2Color: Colors.green300,
     primary3Color: Colors.green700,
-    accent1Color: Colors.teal500,
+    accent1Color: Colors.green300,
     accent2Color: Colors.blue200,
     accent3Color: Colors.red200,
     textColor: Colors.darkBlack,

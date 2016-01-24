@@ -121,7 +121,7 @@ class QuizCard extends Component {
       snackbarOpen: true,
     })
 
-    this.handleCompletion()
+    this.handleCompletion(true)
   }
 
   handleFailure = () => {
@@ -135,15 +135,17 @@ class QuizCard extends Component {
       snackbarOpen: true,
     })
 
-    this.handleCompletion()
+    this.handleCompletion(false)
   }
 
-  handleCompletion = () => {
+  handleCompletion = (correct) => {
     const { answers, id, score, entries } = this.props.current
-    if (Object.keys(answers).length >= Object.keys(entries).length - 1)
+    const newScore = correct ? score + 1 : score
+    if (Object.keys(answers).length >= entries.length - 1) {
       // push completed score to firebase here because cannot do so in action / reducer
-      this.props.firebaseRef.child('scores').child(id).child(score).push(this.props.name)
+      this.props.firebaseRef.child('scores').child(id).child(newScore).push(this.props.name)
       this.props.submitResponse()
+    }
   }
 
   getDescription() {
@@ -221,7 +223,7 @@ class QuizCard extends Component {
       cardActions = <CardActions>
         <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
         {this.getButtons()}
-        <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <IconButton disabled={false} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
         <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
       </CardActions>
     } else {
@@ -229,7 +231,7 @@ class QuizCard extends Component {
         {this.getButtons()}
         <br/>
         <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
-        <IconButton disabled={end && !this.props.current.submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <IconButton disabled={false} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
         <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
       </CardActions>
     }

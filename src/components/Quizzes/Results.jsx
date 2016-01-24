@@ -21,6 +21,8 @@ export default class Results extends Component {
 
     this.state = {
       onresize: null,
+      displayMessage: true,
+      leaderboard: false,
     }
   }
 
@@ -29,6 +31,16 @@ export default class Results extends Component {
   }
 
   componentDidMount() {
+    const average = (scores) => {
+      return scores.reduce((sum, value) => sum + value, 0) / scores.length
+    }
+
+    const standardDeviation = (scores) => {
+      const avge = average(scores)
+      const squareDiffs = scores.map((value) => (value - avge) * (value - avge))
+      return Math.sqrt(average(squareDiffs))
+    }
+
     const WIDTH_IN_PERCENT_OF_PARENT = 100
     const HEIGHT_IN_PERCENT_OF_PARENT = 60
 
@@ -45,16 +57,22 @@ export default class Results extends Component {
                   height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
                 })
 
-    let x = Object.keys(scores)
+    const x = Object.keys(scores)
                   .map(k => {
                     return Array.apply(null, Array(Object.keys(scores[k]).length))
                                 .map(() => Number(k))
                   })
                   .reduce((prev, curr) => prev.concat(curr))
+    const lengths = Object.keys(scores)
+                     .map(k => Object.keys(scores[k]).length)
+    const maxLength = Math.max.apply(Math, lengths)
+    const avg = Math.round(average(x) * 100) / 100
+    const stdev = Math.round(standardDeviation(x) * 100) / 100
+    console.log(maxLength)
 
-    let count = x.filter(k => k === score).length
+    const count = x.filter(k => k === score).length
 
-    let trace = {
+    const trace = {
       x: x,
       histnorm: 'count',
       name: 'statistics',
@@ -100,6 +118,38 @@ export default class Results extends Component {
           bgcolor: palette.accent1Color,
           opacity: 0.8,
         },
+        {
+          x: score ? 0 : size,
+          y: maxLength,
+          xref: 'x',
+          yref: 'y',
+          text: `avg: ${avg}`,
+          showarrow: false,
+          font: {
+            family: 'Roboto, monospace',
+            size: 16,
+            color: '#ffffff',
+          },
+          align: 'center',
+          bgcolor: palette.accent1Color,
+          opacity: 0.8,
+        },
+        {
+          x: score ? 0 : size,
+          y: maxLength * 0.80,
+          xref: 'x',
+          yref: 'y',
+          text: `stdev: ${stdev}`,
+          showarrow: false,
+          font: {
+            family: 'Roboto, monospace',
+            size: 16,
+            color: '#ffffff',
+          },
+          align: 'center',
+          bgcolor: palette.accent1Color,
+          opacity: 0.8,
+        },
       ],
     }
 
@@ -125,6 +175,10 @@ export default class Results extends Component {
     window.onresize = this.state.onresize
   }
 
+  toggleLeaderboard() {
+    this.setState({ leaderboard: !this.state.leaderboard })
+  }
+
   render() {
     const { entries, id, score, title } = this.props.current
     const scores = this.props.scores[id]
@@ -141,21 +195,24 @@ export default class Results extends Component {
       text = 'Well, you may need to brush up on your identification ability.'
     }
     return (
-      <Card style={{width: "80%", margin: "auto"}}>
-        <CardTitle title={`You Got ${score}/${size} (${percentage}%) Correct`} />
-        <CardMedia>
-          <div id="plot">
-          </div>
-        </CardMedia>
-        <CardActions>
-          <IconButton style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
-          <IconButton disabled={true} style={{verticalAlign: "middle"}}><ChevronRight/></IconButton>
-          <RaisedButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
-        </CardActions>
-        <CardText>
-          {text}
-        </CardText>
-      </Card>
+      <div>
+        <Card style={{maxWidth: 700, margin: "auto"}}>
+          <CardTitle title={`You Got ${score}/${size} (${percentage}%)`} />
+          <CardMedia>
+            <div id="plot">
+            </div>
+          </CardMedia>
+          <CardActions>
+            <IconButton style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
+            <IconButton disabled={true} style={{verticalAlign: "middle"}}><ChevronRight/></IconButton>
+            <RaisedButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
+            <RaisedButton label="Leaderboards" onTouchTap={this.toggleLeaderboard} />
+          </CardActions>
+          <CardText>
+            {text}
+          </CardText>
+        </Card>
+      </div>
     )
   }
 }

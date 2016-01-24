@@ -98,7 +98,7 @@ export default function reducer(state = initialState, action) {
         },
       }
     case types.NEXT:
-      let nextIndex = index + 1 //index < Object.keys(entries).length && !submitted ? index + 1 : index
+      let nextIndex = index + 1
       return {
         ...state,
         current: {
