@@ -34,10 +34,10 @@ const mediumSize = 550;
 const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-
 class QuizCard extends Component {
+
   constructor() {
-    super();
+    super()
     this.state = {
       snackbarOpen: false,
       message: '',
@@ -47,6 +47,8 @@ class QuizCard extends Component {
       correctAnswer: '',
       incorrectAnswer: '',
       medium: false,
+      large: false,
+      small: false,
     }
   }
 
@@ -56,47 +58,44 @@ class QuizCard extends Component {
   }
 
   openSnackbar = () => {
-    this.setState({
-      snackbarOpen: true,
-    })
+    this.setState({ snackbarOpen: true })
   }
 
   closeSnackbar = () => {
-    this.setState({
-      snackbarOpen: false,
-    });
+    this.setState({ snackbarOpen: false })
   }
 
   componentDidMount() {
     const { choices, entries, index, answers } = this.props.current
 
-    this.setState({
-      answered: entries[index].id in answers,
-    })
+    this.setState({ answered: entries[index].id in answers })
+
     for (let choice of choices) {
       let correct = choice === entries[index].classification
       if (correct) {
-        this.setState({
-          correctAnswer: choice,
-        })
+        this.setState({ correctAnswer: choice })
       } else {
-        this.setState({
-          incorrectAnswer: choice,
-        })
+        this.setState({ incorrectAnswer: choice })
       }
     }
   }
 
   getButtons() {
     const { choices, entries, index } = this.props.current
+    const entry = entries[index]
+    const size = Object.keys(entries).length
 
-    let list = []
+    const start = index === 0
+    const end = !(index < size - 1 || entry.id in answers)
+    const mediumScreen = document.body.clientWidth > this.context.measurements.mediumScreen
+
+    let choiceButtons = []
     const palette = this.context.muiTheme.baseTheme.palette
     for (let choice of choices) {
       let correct = choice === entries[index].classification
       let handler = correct ? this.handleSuccess : this.handleFailure
       let disabledColor = correct ? palette.accent2Color : palette.accent3Color
-      list.push(
+      choiceButtons.push(
         <RaisedButton
           key={choice}
           disabled={this.state.answered}
@@ -107,7 +106,51 @@ class QuizCard extends Component {
         />
       )
     }
-    return list
+
+    let cardActions = null
+    if (!this.state.small) {
+      cardActions = <CardActions>
+        <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
+        {choiceButtons}
+        <IconButton disabled={end && !this.state.answered} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <FlatButton label="Quiz Select" onTouchTap={this.props.removeCurrent} />
+        <FlatButton label="More Info" onTouchTap={this.props.removeCurrent} />
+      </CardActions>
+    } else {
+      cardActions = <CardActions>
+        {choiceButtons}
+        <br/>
+        <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
+        <IconButton disabled={end && !this.state.answered} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <FlatButton label="Quizzes" onTouchTap={this.props.removeCurrent} />
+        <FlatButton label="More Info" onTouchTap={this.props.removeCurrent} />
+      </CardActions>
+    }
+
+    return cardActions
+  }
+
+  handleResize = (e) => {
+    const large = document.body.clientWidth > this.context.measurements.largeScreen
+    const medium = document.body.clientWidth > this.context.measurements.mediumScreen
+    const small = document.body.clientWidth < this.context.measurements.smallScreen
+
+    console.log(small)
+    console.log(document.body.clientWidth)
+
+    this.setState({
+      small: small,
+      medium: medium,
+      large: large,
+    })
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   }
 
   handleSuccess = () => {
@@ -189,10 +232,6 @@ class QuizCard extends Component {
   render() {
     const { index, entries, answers } = this.props.current
     const entry = entries[index]
-    const size = Object.keys(entries).length
-
-    const start = index === 0
-    const end = !(index < size - 1 || entry.id in answers)
 
     const styles = {
       card: {
@@ -217,32 +256,13 @@ class QuizCard extends Component {
       />
     )
 
-    const mediumScreen = document.body.clientWidth > this.context.measurements.mediumScreen
-    let cardActions = null
-    if (mediumScreen) {
-      cardActions = <CardActions>
-        <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
-        {this.getButtons()}
-        <IconButton disabled={false} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
-        <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
-      </CardActions>
-    } else {
-      cardActions = <CardActions>
-        {this.getButtons()}
-        <br/>
-        <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
-        <IconButton disabled={false} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
-        <FlatButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
-      </CardActions>
-    }
-
     return (
       <div className="quiz">
         <Card style={styles.card}>
-          <CardTitle title={this.getTitle()} />
+          <CardTitle title={entry.name} />
           <CardMedia style={styles.media}>
           </CardMedia>
-          {cardActions}
+          {this.getButtons()}
         </Card>
         <Snackbar
           open={this.state.snackbarOpen}

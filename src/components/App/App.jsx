@@ -86,14 +86,16 @@ class App extends React.Component {
     this.setState({ windowWidth: window.innerWidth })
     const large = document.body.clientWidth > this.state.measurements.largeScreen
     const medium = document.body.clientWidth > this.state.measurements.mediumScreen
+    const small = document.body.clientWidth < this.state.measurements.smallScreen
 
     this.setState({
-      showMenuIconButton: medium ? false : true,
-      leftNavDocked: medium ? true : false,
-      leftNavOpen: medium ? true : false,
-      rightNavDocked: large ? true : false,
-      rightNavOpen: large ? true : false,
+      showMenuIconButton: !medium,
+      leftNavDocked: medium,
+      leftNavOpen: medium,
+      rightNavDocked: large,
+      rightNavOpen: large,
       iconElementRight: large ? <div></div> : <IconButton onTouchTap={this.toggleRightNav}><AdjustIcon /></IconButton>,
+      textElementRight: !small,
     })
   }
 
@@ -215,7 +217,7 @@ class App extends React.Component {
       <div>
         <Avatar src={this.props.avatar} style={styles.avatar} />
         <span style={styles.name}>{this.props.name}</span>
-        <span style={styles.score}>{score} pts</span>
+        {this.state.textElementRight ? <span style={styles.score}>{score} pts</span> : <div></div>}
       </div>
     )
 

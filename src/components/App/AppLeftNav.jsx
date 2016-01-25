@@ -139,7 +139,7 @@ export default class AppLeftNav extends Component {
             value="https://github.com/callemall/material-ui"
             primaryText="material-ui"
           />
-      </SelectableList>
+        </SelectableList>
       </LeftNav>
     )
   }
