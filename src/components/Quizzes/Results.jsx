@@ -68,7 +68,6 @@ export default class Results extends Component {
     const maxLength = Math.max.apply(Math, lengths)
     const avg = Math.round(average(x) * 100) / 100
     const stdev = Math.round(standardDeviation(x) * 100) / 100
-    console.log(maxLength)
 
     const count = x.filter(k => k === score).length
 
@@ -153,7 +152,7 @@ export default class Results extends Component {
       ],
     }
 
-    let gd = gd3.node();
+    let gd = gd3.node()
 
     Plotly.plot(gd, data, layout)
 

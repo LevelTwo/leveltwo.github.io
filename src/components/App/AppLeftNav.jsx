@@ -132,6 +132,10 @@ export default class AppLeftNav extends Component {
             primaryText="React"
           />
           <ListItem
+            value="http://redux.js.org/"
+            primaryText="Redux"
+          />
+          <ListItem
             value="https://www.google.com/design/spec/material-design/introduction.html"
             primaryText="Material Design"
           />

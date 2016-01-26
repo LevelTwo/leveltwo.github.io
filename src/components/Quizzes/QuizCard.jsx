@@ -15,6 +15,7 @@ import DropDownMenu from 'material-ui/lib/DropDownMenu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import Snackbar from 'material-ui/lib/snackbar'
 import Dialog from 'material-ui/lib/dialog'
+import Popover from 'material-ui/lib/popover/popover'
 
 import ArrowDropDown from 'material-ui/lib/svg-icons/navigation/arrow-drop-down'
 import ArrowDropUp from 'material-ui/lib/svg-icons/navigation/arrow-drop-up'
@@ -28,13 +29,7 @@ import Check from 'material-ui/lib/svg-icons/navigation/check'
 import Close from 'material-ui/lib/svg-icons/navigation/close'
 import { Colors } from 'material-ui/lib/styles'
 
-const smallSize = 450;
-const mediumSize = 550;
-
-const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
-class QuizCard extends Component {
+export default class QuizCard extends Component {
 
   constructor() {
     super()
@@ -43,6 +38,7 @@ class QuizCard extends Component {
       message: '',
       notice: '',
       answered: false,
+      correct: false,
       moreInfo: false,
       correctAnswer: '',
       incorrectAnswer: '',
@@ -65,7 +61,7 @@ class QuizCard extends Component {
     this.setState({ snackbarOpen: false })
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { choices, entries, index, answers } = this.props.current
 
     this.setState({ answered: entries[index].id in answers })
@@ -81,12 +77,12 @@ class QuizCard extends Component {
   }
 
   getButtons() {
-    const { choices, entries, index } = this.props.current
+    const { choices, entries, answers, index, submitted } = this.props.current
     const entry = entries[index]
     const size = Object.keys(entries).length
 
     const start = index === 0
-    const end = !(index < size - 1 || entry.id in answers)
+    const end = !(index < size - 1)
     const mediumScreen = document.body.clientWidth > this.context.measurements.mediumScreen
 
     let choiceButtons = []
@@ -112,9 +108,9 @@ class QuizCard extends Component {
       cardActions = <CardActions>
         <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
         {choiceButtons}
-        <IconButton disabled={end && !this.state.answered} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
-        <FlatButton label="Quiz Select" onTouchTap={this.props.removeCurrent} />
-        <FlatButton label="More Info" onTouchTap={this.props.removeCurrent} />
+        <IconButton disabled={false} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <FlatButton label="Quizzes" onTouchTap={this.props.removeCurrent} />
+        {this.state.answered ? <FlatButton label="More Info" onTouchTap={this.toggleMoreInfo} /> : <div></div>}
       </CardActions>
     } else {
       cardActions = <CardActions>
@@ -123,7 +119,7 @@ class QuizCard extends Component {
         <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
         <IconButton disabled={end && !this.state.answered} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
         <FlatButton label="Quizzes" onTouchTap={this.props.removeCurrent} />
-        <FlatButton label="More Info" onTouchTap={this.props.removeCurrent} />
+        <FlatButton label="More Info" onTouchTap={this.toggleMoreInfo} />
       </CardActions>
     }
 
@@ -134,9 +130,6 @@ class QuizCard extends Component {
     const large = document.body.clientWidth > this.context.measurements.largeScreen
     const medium = document.body.clientWidth > this.context.measurements.mediumScreen
     const small = document.body.clientWidth < this.context.measurements.smallScreen
-
-    console.log(small)
-    console.log(document.body.clientWidth)
 
     this.setState({
       small: small,
@@ -161,6 +154,7 @@ class QuizCard extends Component {
       message: 'Correct Answer!',
       notice: notices[Math.floor(Math.random() * notices.length)],
       answered: true,
+      correct: true,
       snackbarOpen: true,
     })
 
@@ -223,15 +217,15 @@ class QuizCard extends Component {
     )
   }
 
-  moreInfo = () => {
-    this.setState({
-      moreInfo: !this.state.moreInfo,
-    })
+  toggleMoreInfo = () => {
+    this.setState({ moreInfo: !this.state.moreInfo })
   }
 
   render() {
     const { index, entries, answers } = this.props.current
+    const { correctAnswer, incorrectAnswer } = this.state
     const entry = entries[index]
+    const percentage = Math.round(entry.correct / entry.responses * 100)
 
     const styles = {
       card: {
@@ -252,10 +246,12 @@ class QuizCard extends Component {
       <FlatButton
         label="Okey"
         secondary={true}
-        onTouchTap={this.moreInfo}
+        keyboardFocused={true}
+        onTouchTap={this.toggleMoreInfo}
       />
     )
 
+    // turn into multiple components
     return (
       <div className="quiz">
         <Card style={styles.card}>
@@ -264,6 +260,16 @@ class QuizCard extends Component {
           </CardMedia>
           {this.getButtons()}
         </Card>
+        <Dialog
+          title={entry.name}
+          actions={standardActions}
+          open={this.state.moreInfo}
+          onRequestClose={this.toggleMoreInfo}
+        >
+          {entry.description}{' '}
+          {percentage}% answered {' '}{correctAnswer}, and {' '}
+          {100 - percentage}% answered {' '}{incorrectAnswer}.
+        </Dialog>
         <Snackbar
           open={this.state.snackbarOpen}
           message={this.state.message}
@@ -275,5 +281,3 @@ class QuizCard extends Component {
     );
   }
 }
-
-export default QuizCard;

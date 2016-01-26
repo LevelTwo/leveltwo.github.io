@@ -51,7 +51,7 @@ export default class QuizGrid extends Component {
     return (
       <div>
         <GridList
-          cellHeight={300}
+          cellHeight={200}
           padding={8}
         >
           {tileElements}
