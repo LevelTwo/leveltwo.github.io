@@ -50,7 +50,7 @@ export default class AppLeftNav extends Component {
     this.setState({ leftNavOpen: open })
   }
 
-  handleRequestChangeList = (event, value) => {
+  handleRequestChangeList = (value) => {
     this.props.history.push(value)
     this.setState({ leftNavOpen: false })
   }
@@ -73,8 +73,10 @@ export default class AppLeftNav extends Component {
     const quizzes = this.props.quizzes
     const quizArray = Object.keys(quizzes).map(key => quizzes[key])
     const listElements = quizArray.map(quiz => <ListItem
+        key={quiz.title}
         leftAvatar={<Avatar src={quiz.img} backgroundColor={quiz.background} />}
         primaryText={quiz.title}
+        onTouchTap={() => this.props.selectQuiz(quiz.id)}
       />
     )
 
@@ -92,29 +94,30 @@ export default class AppLeftNav extends Component {
         >
           {this.props.name}
         </div>
-        <SelectableList
-          valueLink={{
-            value: this.getSelectedIndex(),
-            requestChange: this.handleRequestChangeList,
-          }}
-        >
+        <List>
           <ListItem
+            key="profile"
             leftAvatar={<Avatar icon={<AccountCircleIcon />} backgroundColor={Colors.blue500} />}
             value="profile"
             primaryText="Profile"
+            onTouchTap={() => this.handleRequestChangeList('profile')}
           />
           <ListItem
+            key="about"
             leftAvatar={<Avatar icon={<InfoIcon />} backgroundColor={Colors.red500} />}
             value="about"
             primaryText="About"
+            onTouchTap={() => this.handleRequestChangeList('about')}
           />
           <ListItem
+            key="app"
             leftAvatar={<Avatar src="images/quizzes/quizzes2.svg" />}
             value="app"
             primaryText="Quizzes"
+            onTouchTap={() => this.handleRequestChangeList('app')}
             nestedItems={listElements}
           />
-        </SelectableList>
+        </List>
         <Divider />
         <SelectableList
           subheader="Resources"

@@ -20,8 +20,8 @@ export default class QuizGrid extends Component {
         marginBottom: 24,
       },
       img: {
-        maxHeight: '80%',
-        maxWidth: '90%',
+        maxHeight: '150%',
+        maxWidth: '150%',
       },
     }
   }
@@ -51,7 +51,7 @@ export default class QuizGrid extends Component {
     return (
       <div>
         <GridList
-          cellHeight={200}
+          cellHeight={250}
           padding={8}
         >
           {tileElements}

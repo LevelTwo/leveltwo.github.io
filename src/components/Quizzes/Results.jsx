@@ -179,6 +179,7 @@ export default class Results extends Component {
   }
 
   render() {
+    // leaderboard in the future
     const { entries, id, score, title } = this.props.current
     const scores = this.props.scores[id]
     const size = Object.keys(entries).length
@@ -205,7 +206,6 @@ export default class Results extends Component {
             <IconButton style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
             <IconButton disabled={true} style={{verticalAlign: "middle"}}><ChevronRight/></IconButton>
             <RaisedButton label="Back to Quiz Select" onTouchTap={this.props.removeCurrent} />
-            <RaisedButton label="Leaderboards" onTouchTap={this.toggleLeaderboard} />
           </CardActions>
           <CardText>
             {text}

@@ -66,6 +66,8 @@ export default class QuizCard extends Component {
 
     this.setState({ answered: entries[index].id in answers })
 
+    this.handleResize()
+
     for (let choice of choices) {
       let correct = choice === entries[index].classification
       if (correct) {
@@ -104,11 +106,12 @@ export default class QuizCard extends Component {
     }
 
     let cardActions = null
+
     if (!this.state.small) {
       cardActions = <CardActions>
         <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
         {choiceButtons}
-        <IconButton disabled={false} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <IconButton disabled={end && !submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
         <FlatButton label="Quizzes" onTouchTap={this.props.removeCurrent} />
         {this.state.answered ? <FlatButton label="More Info" onTouchTap={this.toggleMoreInfo} /> : <div></div>}
       </CardActions>
@@ -117,9 +120,9 @@ export default class QuizCard extends Component {
         {choiceButtons}
         <br/>
         <IconButton disabled={start} style={{verticalAlign: "middle"}} onTouchTap={this.props.prev}><ChevronLeft/></IconButton>
-        <IconButton disabled={end && !this.state.answered} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
+        <IconButton disabled={end && !submitted} style={{verticalAlign: "middle"}} onTouchTap={this.props.next}><ChevronRight/></IconButton>
         <FlatButton label="Quizzes" onTouchTap={this.props.removeCurrent} />
-        <FlatButton label="More Info" onTouchTap={this.toggleMoreInfo} />
+        {this.state.answered ? <FlatButton label="More Info" onTouchTap={this.toggleMoreInfo} /> : <div></div>}
       </CardActions>
     }
 
@@ -185,16 +188,6 @@ export default class QuizCard extends Component {
     }
   }
 
-  getDescription() {
-    let text = <CardText style={{paddingTop: 0}}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-    </CardText>
-    return text
-  }
-
   getTitle() {
     let menuItems = []
     const { entries, index, answers, choices, id, score, title } = this.props.current
@@ -217,15 +210,9 @@ export default class QuizCard extends Component {
     )
   }
 
-  toggleMoreInfo = () => {
-    this.setState({ moreInfo: !this.state.moreInfo })
-  }
-
-  render() {
-    const { index, entries, answers } = this.props.current
-    const { correctAnswer, incorrectAnswer } = this.state
+  getStyles() {
+    const { index, entries, type } = this.props.current
     const entry = entries[index]
-    const percentage = Math.round(entry.correct / entry.responses * 100)
 
     const styles = {
       card: {
@@ -233,7 +220,7 @@ export default class QuizCard extends Component {
         margin: "auto",
       },
       media: {
-        minHeight: 400,
+        minHeight: document.body.clientHeight > 400 ? 400 : 200,
         maxWidth: 700,
         background: `url(${entry.image_root + entry.images[0]}) center`,
         backgroundPosition: "center",
@@ -241,6 +228,40 @@ export default class QuizCard extends Component {
         backgroundSize: "cover",
       },
     }
+
+    if (type === 'text' && !this.state.answered) {
+      styles['media']['background'] = ''
+      styles['media']['backgroundColor'] = Colors.grey800
+    }
+
+    return styles
+  }
+
+  getCardImage() {
+    const { index, entries, type } = this.props.current
+    const entry = entries[index]
+    const styles = this.getStyles()
+
+    let cardImage = <CardMedia style={styles.media} overlay={<CardTitle title={entry.name} />} />
+
+    if (type === 'image' && !this.state.answered) {
+      cardImage = <CardMedia style={styles.media} />
+    }
+
+    return cardImage
+  }
+
+  toggleMoreInfo = () => {
+    this.setState({ moreInfo: !this.state.moreInfo })
+  }
+
+  render() {
+    const { index, entries, answers, type } = this.props.current
+    const { correctAnswer, incorrectAnswer } = this.state
+    const entry = entries[index]
+    const percentage = Math.round(entry.correct / entry.responses * 100)
+
+    const styles = this.getStyles()
 
     const standardActions = (
       <FlatButton
@@ -255,9 +276,7 @@ export default class QuizCard extends Component {
     return (
       <div className="quiz">
         <Card style={styles.card}>
-          <CardTitle title={entry.name} />
-          <CardMedia style={styles.media}>
-          </CardMedia>
+          {this.getCardImage()}
           {this.getButtons()}
         </Card>
         <Dialog

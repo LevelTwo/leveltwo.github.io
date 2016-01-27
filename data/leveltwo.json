@@ -184,7 +184,7 @@
       "classification" : "chinese",
       "correct" : 0,
       "description" : "Hú Bīngqīng (胡冰卿) (born January 25, 1992) is a Chinese actress. She was born in Shanghai , and graduated from Fudan University, Shanghai Institute of Visual Art Performance Department. She has played in many Chinese TV series such as The Imperial Doctoress (女医·明妃传) and The Legend of Qin (秦时明月).",
-      "id" : " hu_bingqing",
+      "id" : "hu_bingqing",
       "image_root" : "images/chinese/hu_bingqing",
       "images" : [ "_1.jpg", "_2.jpg", "_3.jpg", "_4.jpg", "_5.jpg" ],
       "name" : "Hú Bīngqīng (胡冰卿)",
@@ -468,7 +468,8 @@
       "entries" : [ "robert_lewandowski", "andriy_shevchenko", "daniel_sturridge", "andrew_wiles", "alexander_grothendieck", "thibaut_courtois", "shinji_kagawa", "henri_poincare", "yutaka_taniyama", "dennis_bergkamp", "luitzen_brouwer", "gerhard_gentzen" ],
       "id" : "fp1",
       "img" : "images/quizzes/fp1.svg",
-      "title" : "Footballer or Mathematician? I"
+      "title" : "Footballer or Mathematician? I",
+      "type" : "text"
     },
     "fp2" : {
       "background" : "#F44336",
@@ -476,7 +477,8 @@
       "entries" : [ "wayne_rooney", "ian_wright", "jaakko_hintikka", "aleksandr_kerzhakov", "andrej_bauer", "hermann_weyl", "hermann_minkowski", "keisuke_honda", "sami_hyypia", "jurgen_klinsmann", "francesco_totti", "felix_klein" ],
       "id" : "fp2",
       "img" : "images/quizzes/fp2.svg",
-      "title" : "Footballer or Mathematician? II"
+      "title" : "Footballer or Mathematician? II",
+      "type" : "text"
     },
     "tc1" : {
       "background" : "#2196F3",
@@ -484,7 +486,8 @@
       "entries" : [ "liu_chuanzhi", "dhanin_chearavanont", "james_assarasakorn", "liu_yifei", "li_yifeng", "nichkhun", "pimtha", "pornnppan_pornpenpipat", "frung", "charada_imraporn", "hu_bingqing", "shao_xingyun" ],
       "id" : "tc1",
       "img" : "images/quizzes/tc1.svg",
-      "title" : "Thai or Chinese? I"
+      "title" : "Thai or Chinese? I",
+      "type" : "image"
     },
     "tc2" : {
       "background" : "#009688",
@@ -492,13 +495,10 @@
       "entries" : [ "chen_kaige", "ren_zhengfei", "chuan_leekpai", "prayut_chan-o-cha", "kanya_rattanapetch", "zheng_shuang", "zhang_zetian", "liu_shishi", "luhan", "yang_mi" ],
       "id" : "tc2",
       "img" : "images/quizzes/tc2.svg",
-      "title" : "Thai or Chinese? II"
+      "title" : "Thai or Chinese? II",
+      "type" : "image"
     }
   },
   "scores" : {
-    "fp1" : [ [ "Anonymous", "Anonymous" ], [ "Anonymous", "Anonymous" ] ],
-    "fp2" : [ [ "Anonymous", "Anonymous" ], [ "Anonymous", "Anonymous" ] ],
-    "tc1" : [ [ "Anonymous", "Anonymous" ], [ "Anonymous", "Anonymous" ] ],
-    "tc2" : [ [ "Anonymous", "Anonymous" ], [ "Anonymous", "Anonymous" ] ]
   }
 }
