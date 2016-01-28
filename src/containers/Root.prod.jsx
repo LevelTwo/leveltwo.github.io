@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import Routes from '../routes'
-import Router, { Route } from 'react-router'
-import createBrowserHistory from 'history/lib/createBrowserHistory'
+import Router, { Route, browserHistory } from 'react-router'
 
 export default class Root extends React.Component {
   render() {
@@ -10,7 +9,7 @@ export default class Root extends React.Component {
     return (
       <Provider store={store}>
         <Router
-          history={createBrowserHistory({queryKey: false})}
+          history={browserHistory}
           onUpdate={() => window.scrollTo(0, 0)}
         >
           {Routes}

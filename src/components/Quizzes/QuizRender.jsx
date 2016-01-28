@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import ReactCSSTransitionReplace from 'react-css-transition-replace'
-import { VelocityTransitionGroup } from 'velocity-react'
-import { List, Map, OrderedMap  } from 'immutable'
+import VelocityTransitionGroup from 'velocity-react/velocity-transition-group'
 import { connect } from 'react-redux'
 
 import QuizCard from './QuizCard'
