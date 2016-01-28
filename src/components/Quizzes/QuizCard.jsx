@@ -1,33 +1,22 @@
 import React, { PropTypes, Component } from 'react'
 
-import Avatar from 'material-ui/lib/avatar'
 import IconButton from 'material-ui/lib/icon-button'
 import FlatButton from 'material-ui/lib/flat-button'
-import FloatingActionButton from 'material-ui/lib/floating-action-button'
 import RaisedButton from 'material-ui/lib/raised-button'
 import Card from 'material-ui/lib/card/card'
 import CardActions from 'material-ui/lib/card/card-actions'
-import CardHeader from 'material-ui/lib/card/card-header'
 import CardMedia from 'material-ui/lib/card/card-media'
 import CardTitle from 'material-ui/lib/card/card-title'
-import CardText from 'material-ui/lib/card/card-text'
 import DropDownMenu from 'material-ui/lib/DropDownMenu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import Snackbar from 'material-ui/lib/snackbar'
 import Dialog from 'material-ui/lib/dialog'
-import Popover from 'material-ui/lib/popover/popover'
 
-import ArrowDropDown from 'material-ui/lib/svg-icons/navigation/arrow-drop-down'
-import ArrowDropUp from 'material-ui/lib/svg-icons/navigation/arrow-drop-up'
-import ExpandMore from 'material-ui/lib/svg-icons/navigation/expand-more'
-import ExpandLess from 'material-ui/lib/svg-icons/navigation/expand-less'
-import ArrowBack from 'material-ui/lib/svg-icons/navigation/arrow-back'
-import ArrowForward from 'material-ui/lib/svg-icons/navigation/arrow-forward'
 import ChevronLeft from 'material-ui/lib/svg-icons/navigation/chevron-left'
 import ChevronRight from 'material-ui/lib/svg-icons/navigation/chevron-right'
 import Check from 'material-ui/lib/svg-icons/navigation/check'
 import Close from 'material-ui/lib/svg-icons/navigation/close'
-import { Colors } from 'material-ui/lib/styles'
+import Colors from 'material-ui/lib/styles/colors'
 
 export default class QuizCard extends Component {
 
@@ -222,16 +211,18 @@ export default class QuizCard extends Component {
       media: {
         minHeight: document.body.clientHeight > 400 ? 400 : 200,
         maxWidth: 700,
-        background: `url(${entry.image_root + entry.images[0]}) center`,
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
+        backgroundColor: Colors.grey800,
       },
     }
 
-    if (type === 'text' && !this.state.answered) {
-      styles['media']['background'] = ''
-      styles['media']['backgroundColor'] = Colors.grey800
+    if (type !== 'text' || this.state.answered) {
+      styles.media = {
+        ...styles.media,
+        background: `url(${entry.image}) center`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }
     }
 
     return styles
@@ -259,7 +250,8 @@ export default class QuizCard extends Component {
     const { index, entries, answers, type } = this.props.current
     const { correctAnswer, incorrectAnswer } = this.state
     const entry = entries[index]
-    const percentage = Math.round(entry.correct / entry.responses * 100)
+    const pCorrect = entry.responses > 0 ? Math.round(entry.correct / entry.responses * 100) : 0
+    const pIncorrect = pCorrect > 0 ? 100 - pCorrect : 0
 
     const styles = this.getStyles()
 
@@ -286,8 +278,8 @@ export default class QuizCard extends Component {
           onRequestClose={this.toggleMoreInfo}
         >
           {entry.description}{' '}
-          {percentage}% answered {' '}{correctAnswer}, and {' '}
-          {100 - percentage}% answered {' '}{incorrectAnswer}.
+          {pCorrect}% answered {' '}{correctAnswer} and {' '}
+          {pIncorrect}% answered {' '}{incorrectAnswer}.
         </Dialog>
         <Snackbar
           open={this.state.snackbarOpen}

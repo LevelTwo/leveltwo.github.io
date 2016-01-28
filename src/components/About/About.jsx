@@ -15,7 +15,13 @@ export default class About extends Component {
       <div style={{textAlign: "center", paddingTop: "2em"}}>
         <img src='images/quizzes/quizzes.svg' style={{width: "250px", height: "250px"}} />
         <h1>Quizzes</h1>
-        <p>Welcome to Quizzes</p>
+        <p>
+          Welcome to Quizzes, a collection of themed quizzes about random
+          things.
+        </p>
+        <p>
+          To begin, click one of the buttons below
+        </p>
         <RaisedButton
           primary={true}
           label="Sign In"

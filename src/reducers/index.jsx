@@ -4,7 +4,6 @@ import assign from 'lodash/object/assign'
 import mapValues from 'lodash/object/mapValues'
 import Firebase from 'firebase'
 import * as types from '../actions/actionTypes'
-import { List, Map } from 'immutable'
 
 const initialState = {
   firebaseRef: null,
@@ -15,6 +14,19 @@ const initialState = {
   entries: {},
   quizzes: {},
   scores: {},
+}
+
+function shuffle(array) {
+  let i = 0, j = 0, temp = null
+
+  for (i = array.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1))
+    temp = array[i]
+    array[i] = array[j]
+    array[j] = temp
+  }
+
+  return array
 }
 
 export default function firebaseReducer(state = initialstate, action) {
@@ -77,6 +89,17 @@ export default function reducer(state = initialState, action) {
         }
       }
       let quiz = state.quizzes[quizId]
+      // load entries from entryIds specified in quizzes
+      let loadedEntries = quiz.entries.map(k => state.entries[k])
+      // choose random image from set
+      loadedEntries = loadedEntries.map(entry => {
+        const { image_root, images } = entry
+        return {
+          ...entry,
+          image: image_root + images[Math.floor(Math.random() * images.length)],
+        }
+      })
+      loadedEntries = shuffle(loadedEntries)
       return {
         ...state,
         current: {
@@ -85,7 +108,7 @@ export default function reducer(state = initialState, action) {
           score: 0,
           index: 0,
           submitted: false,
-          entries: quiz.entries.map((k) => state.entries[k]),
+          entries: loadedEntries,
           answers: {},
         },
       }
