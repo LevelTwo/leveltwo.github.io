@@ -180,7 +180,7 @@ export default class Results extends Component {
 
   render() {
     // leaderboard in the future
-    const { entries, id, score, title } = this.props.current
+    const { entries, id, score, title, choices } = this.props.current
     const scores = this.props.scores[id]
     const size = Object.keys(entries).length
     let percentage = Math.round(score * 100 / size)
@@ -188,7 +188,7 @@ export default class Results extends Component {
     if (percentage === 100) {
       text = "Congratulations, You're #FLAWLESS"
     } else if (percentage > 66) {
-      text = 'Impressive, you are probably familiar with '
+      text = 'Impressive, you are probably familiar with these things'
     } else if (percentage > 33) {
       text = 'I guess, you probably guessed your way here'
     } else {
